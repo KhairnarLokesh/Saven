@@ -2,8 +2,6 @@
 
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { servicesData } from '@/data/services';
-import { ServiceItem } from '@/types';
 import {
   Code2,
   RefreshCw,
@@ -24,100 +22,139 @@ interface ServicesProps {
   onSelectService: (serviceTitle: string) => void;
 }
 
-// Product-grade narrative descriptions and executive bullets for all 6 services
-const serviceProductDetails: Record<
-  string,
+interface ServiceDataConfig {
+  id: string;
+  number: string;
+  title: string;
+  systemTag: string;
+  icon: React.ReactNode;
+  restingHighlight: string;
+  detailedParagraph: string;
+  deliverables: string[];
+  techStack: string[];
+}
+
+// User-specified titles, resting highlights, and balanced product-grade paragraphs
+const servicesConfig: ServiceDataConfig[] = [
   {
-    systemTag: string;
-    icon: React.ReactNode;
-    executiveBullets: string[];
-    detailedParagraph: string;
-  }
-> = {
-  'software-dev': {
+    id: 'custom-software',
+    number: '01',
+    title: 'Custom Software',
     systemTag: 'CORE ARCHITECTURE',
     icon: <Code2 className="w-4 h-4" />,
-    executiveBullets: [
-      'Proprietary business software & bespoke web applications',
-      'High-throughput backend API engines & automation workflows',
-      'Resilient relational & document database schema modeling',
-      'Cloud containerization with automated CI/CD pipelines',
-    ],
+    restingHighlight:
+      'High-throughput microservices, strictly typed codebases, and resilient schema modeling.',
     detailedParagraph:
-      'We architect production-grade software solutions engineered around your exact operational workflows and business logic. Moving beyond off-the-shelf templates, every system is crafted with strictly typed codebases, high-throughput microservices, and battle-tested databases capable of scaling seamlessly as your user volume expands.',
+      'We engineer bespoke software systems and backend services tailored to your operational workflows. Every application is built with strictly typed architectures, automated CI/CD pipelines, and high-resilience database modeling that scales seamlessly with your business.',
+    deliverables: [
+      'Proprietary business logic & custom applications',
+      'High-throughput REST & GraphQL API engines',
+      'Relational & document database schema modeling',
+      'Automated CI/CD pipelines & cloud deployment',
+    ],
+    techStack: ['Node.js', 'Go', 'Python', 'PostgreSQL', 'Docker', 'AWS'],
   },
-  'software-enhancement': {
+  {
+    id: 'software-modernization',
+    number: '02',
+    title: 'Software Modernization',
     systemTag: 'MODERNIZATION',
     icon: <RefreshCw className="w-4 h-4" />,
-    executiveBullets: [
-      'Legacy codebase refactoring & technical debt reduction',
-      'Query optimization delivering up to 3.5x throughput gain',
-      'Zero-downtime database index tuning & schema migration',
-      'Modern UI/UX interface overhaul with design systems',
-    ],
+    restingHighlight:
+      'Bottleneck diagnosis, query acceleration (up to 3.5x speedup), and zero-downtime migrations.',
     detailedParagraph:
-      'We diagnose and eliminate architectural bottlenecks in existing applications. Whether tackling accumulated technical debt, optimizing sluggish database queries, or overhauling aging user interfaces, our team revitalizes your software into a high-performance modern platform with zero operational downtime.',
+      'We diagnose and resolve architectural bottlenecks across legacy platforms. From eliminating technical debt and tuning sluggish database queries to modernizing user interfaces, our team revitalizes your software into a high-performance platform with zero downtime.',
+    deliverables: [
+      'Legacy codebase refactoring & debt reduction',
+      'Database index tuning & query acceleration',
+      'Modern UI/UX interface overhaul with design systems',
+      'Zero-downtime database & server migrations',
+    ],
+    techStack: ['React', 'Next.js', 'TypeScript', 'Redis', 'PostgreSQL', 'Docker'],
   },
-  'academic-projects': {
+  {
+    id: 'academic-engineering',
+    number: '03',
+    title: 'Academic Engineering',
     systemTag: 'ACADEMIC ENGINEERING',
     icon: <GraduationCap className="w-4 h-4" />,
-    executiveBullets: [
-      'Capstone & final-year software development assistance',
-      'Production-quality full-stack web & machine learning prototypes',
-      'Comprehensive IEEE-standard SRS documentation & diagrams',
-      'Live system demonstration & technical viva defense coaching',
-    ],
+    restingHighlight:
+      'Rigorous capstone mentorship, machine learning prototypes, and IEEE-standard SRS documentation.',
     detailedParagraph:
-      'We provide rigorous engineering mentorship and technical execution for students and researchers tackling complex academic software prototypes. From machine learning pipelines to modern full-stack architectures, we deliver clean source code alongside structured IEEE documentation to ensure complete mastery during project defense.',
+      'We provide rigorous technical guidance and end-to-end prototype development for academic and capstone software projects. We deliver clean, modular codebases alongside comprehensive IEEE-standard SRS documentation, architecture diagrams, and viva defense coaching.',
+    deliverables: [
+      'Capstone & final-year project development assistance',
+      'Production-quality full-stack & ML prototypes',
+      'Comprehensive IEEE-standard SRS documentation',
+      'Live demonstration setup & technical viva preparation',
+    ],
+    techStack: ['React', 'Node.js', 'Python / ML', 'MySQL', 'MongoDB', 'Tailwind'],
   },
-  'mobile-dev': {
+  {
+    id: 'mobile-app-dev',
+    number: '04',
+    title: 'Mobile App Dev',
     systemTag: 'MOBILE ECOSYSTEM',
     icon: <Smartphone className="w-4 h-4" />,
-    executiveBullets: [
-      'Cross-platform iOS & Android native mobile applications',
-      'Fluid 60fps micro-animations & platform-specific ergonomics',
-      'Offline-first local database caching & cloud synchronization',
-      'Push notification pipelines & automated app store deployment',
-    ],
+    restingHighlight:
+      '60fps native ergonomics, cross-platform parity, and offline-first database sync.',
     detailedParagraph:
-      'We create high-performance mobile applications that combine native fluid responsiveness with robust offline capabilities. Built with React Native and modern native bridges, our apps deliver unified cross-platform parity while maintaining platform-specific design fidelity across iOS and Android.',
+      'We build intuitive, fluid mobile applications designed for real users. Utilizing React Native and native platform bridges, our mobile apps combine unified cross-platform codebases with native 60fps gesture responsiveness, secure authentication, and robust offline data sync.',
+    deliverables: [
+      'Cross-platform iOS & Android mobile applications',
+      'Fluid 60fps gesture ergonomics & micro-animations',
+      'Offline-first local database caching & cloud sync',
+      'Push notification pipelines & app store deployment',
+    ],
+    techStack: ['React Native', 'Expo', 'TypeScript', 'Tailwind', 'Firebase', 'Supabase'],
   },
-  'web-dev': {
+  {
+    id: 'website-design-dev',
+    number: '05',
+    title: 'Website Design & Dev',
     systemTag: 'PERFORMANCE WEB',
     icon: <Globe className="w-4 h-4" />,
-    executiveBullets: [
-      '100/100 Core Web Vitals & Lighthouse performance standards',
-      'Bespoke editorial agency aesthetics & brand identity design',
-      'Ultra-fast server-side rendering & dynamic SEO schema structure',
-      'Fluid multi-breakpoint responsiveness with zero layout shift',
-    ],
+    restingHighlight:
+      '100/100 Core Web Vitals benchmarks, SSR speed, and brand authority design.',
     detailedParagraph:
-      'We engineer distinctive, high-conversion web platforms that command brand authority. Utilizing Next.js App Router, Tailwind CSS, and custom WebGL micro-interactions, we guarantee instant page loads, flawless search engine indexability, and an unforgettable visual impression on every device.',
+      'We design and develop high-performance, editorial digital experiences that establish unmistakable brand authority. Powered by Next.js App Router and tailored modern design tokens, every site delivers sub-second page loads, flawless search indexing, and fluid responsiveness.',
+    deliverables: [
+      '100/100 Core Web Vitals & Lighthouse benchmarks',
+      'Bespoke editorial agency design & brand aesthetics',
+      'Server-side rendering & dynamic SEO schema structure',
+      'Responsive layouts across viewports with zero layout shift',
+    ],
+    techStack: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'Framer Motion', 'Vercel'],
   },
-  'end-to-end': {
+  {
+    id: 'end-to-end-delivery',
+    number: '06',
+    title: 'End-to-End Delivery',
     systemTag: 'LIFECYCLE SHIP 0→1',
     icon: <Rocket className="w-4 h-4" />,
-    executiveBullets: [
-      'Full product scoping & technical architecture blueprints',
-      'Sprint-based milestone roadmap with staging preview deployments',
-      'Automated cloud infrastructure, security audits & monitoring',
-      'Complete source repository handover, documentation & training',
-    ],
+    restingHighlight:
+      'Complete product progression across a structured 6-stage sprint delivery methodology.',
     detailedParagraph:
-      'From initial whiteboard concept to production launch, we act as your dedicated engineering arm. We manage the complete product lifecycle through structured 6-stage delivery sprints, combining rapid prototyping, stringent automated testing, and comprehensive technical handover for uninterrupted operations.',
+      'From initial whiteboard hypothesis to final production rollout, we manage your complete digital product lifecycle. Through structured two-week delivery sprints, continuous client walkthroughs, and automated testing, we deliver fully documented, production-ready solutions on schedule.',
+    deliverables: [
+      'Product scoping & system architecture blueprint',
+      'Sprint roadmap with staging preview deployments',
+      'Automated cloud infrastructure, security & monitoring',
+      'Complete source repository handover & documentation',
+    ],
+    techStack: ['Full-Stack Modern Stack', 'Docker', 'AWS / Vercel', 'CI/CD Pipelines'],
   },
-};
+];
 
-// Expandable Service Card with Progressive Disclosure
-interface ExpandableCardProps {
-  service: ServiceItem;
+interface ServiceCardProps {
+  item: ServiceDataConfig;
   isExpanded: boolean;
   onToggle: () => void;
   onSelectService: (serviceTitle: string) => void;
 }
 
-const ExpandableServiceCard: React.FC<ExpandableCardProps> = ({
-  service,
+const ServiceCard: React.FC<ServiceCardProps> = ({
+  item,
   isExpanded,
   onToggle,
   onSelectService,
@@ -125,13 +162,6 @@ const ExpandableServiceCard: React.FC<ExpandableCardProps> = ({
   const cardRef = useRef<HTMLDivElement>(null);
   const [mousePos, setMousePos] = useState<{ x: number; y: number }>({ x: -1000, y: -1000 });
   const [isHovered, setIsHovered] = useState(false);
-
-  const details = serviceProductDetails[service.id] || {
-    systemTag: 'PRACTICE AREA',
-    icon: <Code2 className="w-4 h-4" />,
-    executiveBullets: service.deliverables.slice(0, 4),
-    detailedParagraph: service.description,
-  };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
@@ -143,7 +173,7 @@ const ExpandableServiceCard: React.FC<ExpandableCardProps> = ({
   };
 
   const handleScrollToSection = (targetId: string) => {
-    onSelectService(service.title);
+    onSelectService(item.title);
     const targetEl = document.getElementById(targetId);
     if (targetEl) {
       targetEl.scrollIntoView({ behavior: 'smooth' });
@@ -161,7 +191,7 @@ const ExpandableServiceCard: React.FC<ExpandableCardProps> = ({
       onMouseMove={handleMouseMove}
       className={`group relative flex flex-col justify-between p-6 sm:p-7 bg-neutral-950 border transition-all duration-300 overflow-hidden shadow-2xl ${
         isExpanded
-          ? 'border-neutral-500 bg-neutral-950/95 ring-1 ring-white/20'
+          ? 'border-white/50 bg-neutral-950/95 ring-1 ring-white/10'
           : 'border-neutral-800/90 hover:border-neutral-600 hover:-translate-y-1'
       }`}
     >
@@ -204,57 +234,42 @@ const ExpandableServiceCard: React.FC<ExpandableCardProps> = ({
         }}
       />
 
-      {/* Card Body */}
+      {/* Card Content Interior */}
       <div className="relative z-10 flex flex-col h-full justify-between">
         <div>
-          {/* Header Row: Number + System Tag + Recessed Icon */}
+          {/* Header Bar: Number + System Tag + Recessed Icon */}
           <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-neutral-900">
             <div className="flex items-center space-x-2">
               <span className="font-mono text-xs tracking-widest text-neutral-300 px-2 py-0.5 bg-neutral-900 border border-neutral-800">
-                {service.number}
+                {item.number}
               </span>
               <span className="font-mono text-[10px] tracking-wider text-neutral-400 uppercase font-medium">
-                {details.systemTag}
+                {item.systemTag}
               </span>
             </div>
             <div className="p-2 rounded bg-neutral-900 border border-neutral-800 text-neutral-400 group-hover:bg-white group-hover:text-black group-hover:border-white transition-all duration-300">
-              {details.icon}
+              {item.icon}
             </div>
           </div>
 
-          {/* Title & Monospace Tagline */}
-          <div className="mb-4">
-            <h3 className="text-xl font-medium text-white group-hover:text-white transition-colors">
-              {service.title}
+          {/* Title */}
+          <div className="mb-3">
+            <h3 className="text-xl sm:text-2xl font-light text-white group-hover:text-white transition-colors">
+              {item.title}
             </h3>
-            {service.tagline && (
-              <p className="font-mono text-[11px] text-neutral-400 mt-1 tracking-tight">
-                {"// "}{service.tagline}
-              </p>
-            )}
           </div>
 
-          {/* ========================================================== */}
-          {/* 1. INITIAL DISPLAY: SCANNABLE BULLET POINTS               */}
-          {/* ========================================================== */}
-          <div className="mb-5">
-            <span className="block font-mono text-[9px] uppercase tracking-wider text-neutral-400 mb-2.5">
-              CAPABILITY HIGHLIGHTS:
-            </span>
-            <ul className="space-y-2">
-              {details.executiveBullets.map((bullet, idx) => (
-                <li key={idx} className="flex items-start text-xs text-neutral-300 font-light leading-relaxed">
-                  <span className="w-1.5 h-1.5 rounded-full bg-neutral-600 mt-1.5 mr-2.5 shrink-0 group-hover:bg-white transition-colors" />
-                  <span>{bullet}</span>
-                </li>
-              ))}
-            </ul>
+          {/* User-Specified Resting Highlight Line */}
+          <div className="p-3 mb-5 bg-neutral-900/60 border border-neutral-800/80 rounded">
+            <p className="text-xs text-neutral-300 font-light leading-relaxed">
+              {item.restingHighlight}
+            </p>
           </div>
 
           {/* Tech Stack Chips Preview */}
           <div className="pt-3 border-t border-neutral-900/80 mb-4">
             <div className="flex flex-wrap gap-1.5">
-              {service.techStack.slice(0, 3).map((tech) => (
+              {item.techStack.slice(0, 3).map((tech) => (
                 <span
                   key={tech}
                   className="font-mono text-[9px] px-2 py-0.5 rounded bg-neutral-900 border border-neutral-800 text-neutral-400"
@@ -262,63 +277,63 @@ const ExpandableServiceCard: React.FC<ExpandableCardProps> = ({
                   {tech}
                 </span>
               ))}
-              {service.techStack.length > 3 && (
+              {item.techStack.length > 3 && (
                 <span className="font-mono text-[9px] px-1.5 py-0.5 text-neutral-400 self-center">
-                  +{service.techStack.length - 3} more
+                  +{item.techStack.length - 3} more
                 </span>
               )}
             </div>
           </div>
 
           {/* ========================================================== */}
-          {/* 2. EXPANDED DISPLAY: DEEP-DIVE PRODUCT DETAILS            */}
+          {/* EXPANDED CONTENT: BALANCED PARAGRAPH & DELIVERABLES MATRIX  */}
           {/* ========================================================== */}
           <AnimatePresence>
             {isExpanded && (
               <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
+                initial={{ opacity: 0, height: 0, scale: 0.98 }}
+                animate={{ opacity: 1, height: 'auto', scale: 1 }}
+                exit={{ opacity: 0, height: 0, scale: 0.98 }}
                 transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
                 className="overflow-hidden"
               >
                 <div className="pt-4 pb-2 border-t border-neutral-900 space-y-4">
-                  {/* Detailed Narrative Paragraph */}
+                  {/* Balanced Paragraph Format (Not too big, not too short) */}
                   <div className="p-3.5 bg-black/80 border border-neutral-800/90 rounded text-neutral-300">
                     <span className="block font-mono text-[9px] uppercase tracking-wider text-neutral-400 mb-1.5 flex items-center">
                       <FileText className="w-2.5 h-2.5 mr-1 text-white" />
-                      PRODUCT ARCHITECTURE & SCOPE
+                      SERVICE OVERVIEW & ARCHITECTURE
                     </span>
                     <p className="text-xs font-light leading-relaxed text-neutral-300">
-                      {details.detailedParagraph}
+                      {item.detailedParagraph}
                     </p>
                   </div>
 
                   {/* Complete Deliverables Matrix */}
                   <div>
                     <span className="block font-mono text-[9px] uppercase tracking-wider text-neutral-400 mb-2">
-                      ALL DELIVERABLES & ARTIFACTS:
+                      CORE DELIVERABLES:
                     </span>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-                      {service.deliverables.map((item, idx) => (
+                    <div className="space-y-1.5">
+                      {item.deliverables.map((del, idx) => (
                         <div
                           key={idx}
-                          className="flex items-center text-[11px] text-neutral-300 font-light"
+                          className="flex items-center text-xs text-neutral-300 font-light"
                         >
-                          <Check className="w-3 h-3 text-neutral-400 mr-1.5 shrink-0" />
-                          <span className="truncate">{item}</span>
+                          <Check className="w-3 h-3 text-neutral-400 mr-2 shrink-0" />
+                          <span className="truncate">{del}</span>
                         </div>
                       ))}
                     </div>
                   </div>
 
-                  {/* Full Target Tech Stack */}
+                  {/* Complete Tech Stack */}
                   <div>
                     <span className="block font-mono text-[9px] uppercase tracking-wider text-neutral-400 mb-1.5">
-                      TARGET TECH ECOSYSTEM:
+                      ECOSYSTEM & TOOLS:
                     </span>
                     <div className="flex flex-wrap gap-1.5">
-                      {service.techStack.map((tech) => (
+                      {item.techStack.map((tech) => (
                         <span
                           key={tech}
                           className="font-mono text-[9px] px-2 py-0.5 rounded bg-neutral-900 border border-neutral-800 text-neutral-300"
@@ -369,12 +384,12 @@ const ExpandableServiceCard: React.FC<ExpandableCardProps> = ({
             {isExpanded ? (
               <>
                 <Minus className="w-3.5 h-3.5 mr-1.5 text-white" />
-                <span>Collapse Overview</span>
+                <span>Collapse Details</span>
               </>
             ) : (
               <>
                 <Plus className="w-3.5 h-3.5 mr-1.5 text-neutral-400 group-hover:text-white transition-colors" />
-                <span>Expand Full Details</span>
+                <span>Expand Service Details</span>
               </>
             )}
           </span>
@@ -417,14 +432,14 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
           </p>
         </div>
 
-        {/* Clean, Symmetrical 3-Column Grid Alignment (Original First Alignment) */}
+        {/* Clean, Symmetrical 3-Column Grid Alignment */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
-          {servicesData.map((service) => (
-            <ExpandableServiceCard
-              key={service.id}
-              service={service}
-              isExpanded={expandedId === service.id}
-              onToggle={() => toggleExpand(service.id)}
+          {servicesConfig.map((item) => (
+            <ServiceCard
+              key={item.id}
+              item={item}
+              isExpanded={expandedId === item.id}
+              onToggle={() => toggleExpand(item.id)}
               onSelectService={onSelectService}
             />
           ))}
@@ -439,7 +454,7 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
             </span>
           </div>
           <button
-            onClick={() => onSelectService('End-to-End Project Development')}
+            onClick={() => onSelectService('End-to-End Delivery')}
             className="text-xs uppercase tracking-widest font-semibold text-white hover:underline flex items-center cursor-pointer"
           >
             <span>Discuss Custom Architecture</span>
