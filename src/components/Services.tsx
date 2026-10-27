@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { servicesData } from '@/data/services';
 import { ServiceItem } from '@/types';
-import { ServiceModal } from './ServiceModal';
 import {
   Code2,
   RefreshCw,
@@ -13,34 +13,125 @@ import {
   Rocket,
   ArrowRight,
   Plus,
-  Zap,
-  Activity,
+  Minus,
   Check,
+  Calculator,
+  Send,
+  FileText,
 } from 'lucide-react';
 
 interface ServicesProps {
   onSelectService: (serviceTitle: string) => void;
 }
 
-// Individual Linear/Vercel-inspired Architectural Spec Card
-interface ServiceCardProps {
+// Product-grade narrative descriptions and executive bullets for all 6 services
+const serviceProductDetails: Record<
+  string,
+  {
+    systemTag: string;
+    icon: React.ReactNode;
+    executiveBullets: string[];
+    detailedParagraph: string;
+  }
+> = {
+  'software-dev': {
+    systemTag: 'CORE ARCHITECTURE',
+    icon: <Code2 className="w-4 h-4" />,
+    executiveBullets: [
+      'Proprietary business software & bespoke web applications',
+      'High-throughput backend API engines & automation workflows',
+      'Resilient relational & document database schema modeling',
+      'Cloud containerization with automated CI/CD pipelines',
+    ],
+    detailedParagraph:
+      'We architect production-grade software solutions engineered around your exact operational workflows and business logic. Moving beyond off-the-shelf templates, every system is crafted with strictly typed codebases, high-throughput microservices, and battle-tested databases capable of scaling seamlessly as your user volume expands.',
+  },
+  'software-enhancement': {
+    systemTag: 'MODERNIZATION',
+    icon: <RefreshCw className="w-4 h-4" />,
+    executiveBullets: [
+      'Legacy codebase refactoring & technical debt reduction',
+      'Query optimization delivering up to 3.5x throughput gain',
+      'Zero-downtime database index tuning & schema migration',
+      'Modern UI/UX interface overhaul with design systems',
+    ],
+    detailedParagraph:
+      'We diagnose and eliminate architectural bottlenecks in existing applications. Whether tackling accumulated technical debt, optimizing sluggish database queries, or overhauling aging user interfaces, our team revitalizes your software into a high-performance modern platform with zero operational downtime.',
+  },
+  'academic-projects': {
+    systemTag: 'ACADEMIC ENGINEERING',
+    icon: <GraduationCap className="w-4 h-4" />,
+    executiveBullets: [
+      'Capstone & final-year software development assistance',
+      'Production-quality full-stack web & machine learning prototypes',
+      'Comprehensive IEEE-standard SRS documentation & diagrams',
+      'Live system demonstration & technical viva defense coaching',
+    ],
+    detailedParagraph:
+      'We provide rigorous engineering mentorship and technical execution for students and researchers tackling complex academic software prototypes. From machine learning pipelines to modern full-stack architectures, we deliver clean source code alongside structured IEEE documentation to ensure complete mastery during project defense.',
+  },
+  'mobile-dev': {
+    systemTag: 'MOBILE ECOSYSTEM',
+    icon: <Smartphone className="w-4 h-4" />,
+    executiveBullets: [
+      'Cross-platform iOS & Android native mobile applications',
+      'Fluid 60fps micro-animations & platform-specific ergonomics',
+      'Offline-first local database caching & cloud synchronization',
+      'Push notification pipelines & automated app store deployment',
+    ],
+    detailedParagraph:
+      'We create high-performance mobile applications that combine native fluid responsiveness with robust offline capabilities. Built with React Native and modern native bridges, our apps deliver unified cross-platform parity while maintaining platform-specific design fidelity across iOS and Android.',
+  },
+  'web-dev': {
+    systemTag: 'PERFORMANCE WEB',
+    icon: <Globe className="w-4 h-4" />,
+    executiveBullets: [
+      '100/100 Core Web Vitals & Lighthouse performance standards',
+      'Bespoke editorial agency aesthetics & brand identity design',
+      'Ultra-fast server-side rendering & dynamic SEO schema structure',
+      'Fluid multi-breakpoint responsiveness with zero layout shift',
+    ],
+    detailedParagraph:
+      'We engineer distinctive, high-conversion web platforms that command brand authority. Utilizing Next.js App Router, Tailwind CSS, and custom WebGL micro-interactions, we guarantee instant page loads, flawless search engine indexability, and an unforgettable visual impression on every device.',
+  },
+  'end-to-end': {
+    systemTag: 'LIFECYCLE SHIP 0→1',
+    icon: <Rocket className="w-4 h-4" />,
+    executiveBullets: [
+      'Full product scoping & technical architecture blueprints',
+      'Sprint-based milestone roadmap with staging preview deployments',
+      'Automated cloud infrastructure, security audits & monitoring',
+      'Complete source repository handover, documentation & training',
+    ],
+    detailedParagraph:
+      'From initial whiteboard concept to production launch, we act as your dedicated engineering arm. We manage the complete product lifecycle through structured 6-stage delivery sprints, combining rapid prototyping, stringent automated testing, and comprehensive technical handover for uninterrupted operations.',
+  },
+};
+
+// Expandable Service Card with Progressive Disclosure
+interface ExpandableCardProps {
   service: ServiceItem;
-  systemTag: string;
-  icon: React.ReactNode;
-  onOpen: () => void;
-  microStage: React.ReactNode;
+  isExpanded: boolean;
+  onToggle: () => void;
+  onSelectService: (serviceTitle: string) => void;
 }
 
-const ServiceCard: React.FC<ServiceCardProps> = ({
+const ExpandableServiceCard: React.FC<ExpandableCardProps> = ({
   service,
-  systemTag,
-  icon,
-  onOpen,
-  microStage,
+  isExpanded,
+  onToggle,
+  onSelectService,
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [mousePos, setMousePos] = useState<{ x: number; y: number }>({ x: -1000, y: -1000 });
   const [isHovered, setIsHovered] = useState(false);
+
+  const details = serviceProductDetails[service.id] || {
+    systemTag: 'PRACTICE AREA',
+    icon: <Code2 className="w-4 h-4" />,
+    executiveBullets: service.deliverables.slice(0, 4),
+    detailedParagraph: service.description,
+  };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
@@ -51,19 +142,30 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
     });
   };
 
+  const handleScrollToSection = (targetId: string) => {
+    onSelectService(service.title);
+    const targetEl = document.getElementById(targetId);
+    if (targetEl) {
+      targetEl.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <div
       ref={cardRef}
-      onClick={onOpen}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => {
         setIsHovered(false);
         setMousePos({ x: -1000, y: -1000 });
       }}
       onMouseMove={handleMouseMove}
-      className="group relative flex flex-col justify-between p-7 bg-neutral-950 border border-neutral-800/90 hover:border-neutral-600 transition-all duration-300 cursor-pointer overflow-hidden rounded-none shadow-2xl hover:-translate-y-1"
+      className={`group relative flex flex-col justify-between p-6 sm:p-7 bg-neutral-950 border transition-all duration-300 overflow-hidden shadow-2xl ${
+        isExpanded
+          ? 'border-neutral-500 bg-neutral-950/95 ring-1 ring-white/20'
+          : 'border-neutral-800/90 hover:border-neutral-600 hover:-translate-y-1'
+      }`}
     >
-      {/* Precision Corner Crosshairs (+) - Linear/Vercel Architectural aesthetic */}
+      {/* Precision Corner Crosshairs (+) */}
       <span className="pointer-events-none absolute top-1.5 left-1.5 font-mono text-[10px] text-neutral-700 group-hover:text-white transition-colors duration-200 select-none">
         +
       </span>
@@ -102,27 +204,27 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
         }}
       />
 
-      {/* Card Content Interior */}
+      {/* Card Body */}
       <div className="relative z-10 flex flex-col h-full justify-between">
         <div>
-          {/* Header Bar: Monospace System ID & Recessed Icon */}
-          <div className="flex items-center justify-between pb-4 mb-4 border-b border-neutral-900">
+          {/* Header Row: Number + System Tag + Recessed Icon */}
+          <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-neutral-900">
             <div className="flex items-center space-x-2">
               <span className="font-mono text-xs tracking-widest text-neutral-300 px-2 py-0.5 bg-neutral-900 border border-neutral-800">
                 {service.number}
               </span>
-              <span className="font-mono text-[10px] tracking-wider text-neutral-400 uppercase">
-                {systemTag}
+              <span className="font-mono text-[10px] tracking-wider text-neutral-400 uppercase font-medium">
+                {details.systemTag}
               </span>
             </div>
             <div className="p-2 rounded bg-neutral-900 border border-neutral-800 text-neutral-400 group-hover:bg-white group-hover:text-black group-hover:border-white transition-all duration-300">
-              {icon}
+              {details.icon}
             </div>
           </div>
 
           {/* Title & Monospace Tagline */}
-          <div className="mb-3">
-            <h3 className="text-lg sm:text-xl font-medium text-white group-hover:text-white transition-colors">
+          <div className="mb-4">
+            <h3 className="text-xl font-medium text-white group-hover:text-white transition-colors">
               {service.title}
             </h3>
             {service.tagline && (
@@ -132,57 +234,157 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
             )}
           </div>
 
-          {/* Description */}
-          <p className="text-xs text-neutral-400 font-light leading-relaxed mb-4">
-            {service.description}
-          </p>
-
-          {/* Visual Micro-Stage (Bespoke per service) */}
-          <div className="mb-5">{microStage}</div>
-
-          {/* Key Deliverables with Micro-Checks */}
-          <div className="space-y-1.5 mb-5">
-            <span className="block font-mono text-[9px] uppercase tracking-wider text-neutral-400 mb-1">
-              KEY DELIVERABLES:
+          {/* ========================================================== */}
+          {/* 1. INITIAL DISPLAY: SCANNABLE BULLET POINTS               */}
+          {/* ========================================================== */}
+          <div className="mb-5">
+            <span className="block font-mono text-[9px] uppercase tracking-wider text-neutral-400 mb-2.5">
+              CAPABILITY HIGHLIGHTS:
             </span>
-            {service.deliverables.slice(0, 3).map((item, idx) => (
-              <div key={idx} className="flex items-center text-xs text-neutral-300 font-light">
-                <Check className="w-3 h-3 text-neutral-400 mr-2 shrink-0 group-hover:text-white transition-colors" />
-                <span className="truncate">{item}</span>
-              </div>
-            ))}
+            <ul className="space-y-2">
+              {details.executiveBullets.map((bullet, idx) => (
+                <li key={idx} className="flex items-start text-xs text-neutral-300 font-light leading-relaxed">
+                  <span className="w-1.5 h-1.5 rounded-full bg-neutral-600 mt-1.5 mr-2.5 shrink-0 group-hover:bg-white transition-colors" />
+                  <span>{bullet}</span>
+                </li>
+              ))}
+            </ul>
           </div>
 
-          {/* Tech Stack Ecosystem Chips */}
-          <div className="pt-3.5 border-t border-neutral-900/80 mb-5">
-            <span className="block font-mono text-[9px] uppercase tracking-wider text-neutral-400 mb-1.5">
-              TECH STACK:
-            </span>
+          {/* Tech Stack Chips Preview */}
+          <div className="pt-3 border-t border-neutral-900/80 mb-4">
             <div className="flex flex-wrap gap-1.5">
-              {service.techStack.slice(0, 4).map((tech) => (
+              {service.techStack.slice(0, 3).map((tech) => (
                 <span
                   key={tech}
-                  className="font-mono text-[10px] px-2 py-0.5 rounded bg-neutral-900 border border-neutral-800 text-neutral-300 group-hover:border-neutral-700 transition-colors"
+                  className="font-mono text-[9px] px-2 py-0.5 rounded bg-neutral-900 border border-neutral-800 text-neutral-400"
                 >
                   {tech}
                 </span>
               ))}
-              {service.techStack.length > 4 && (
+              {service.techStack.length > 3 && (
                 <span className="font-mono text-[9px] px-1.5 py-0.5 text-neutral-400 self-center">
-                  +{service.techStack.length - 4} more
+                  +{service.techStack.length - 3} more
                 </span>
               )}
             </div>
           </div>
+
+          {/* ========================================================== */}
+          {/* 2. EXPANDED DISPLAY: DEEP-DIVE PRODUCT DETAILS            */}
+          {/* ========================================================== */}
+          <AnimatePresence>
+            {isExpanded && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                className="overflow-hidden"
+              >
+                <div className="pt-4 pb-2 border-t border-neutral-900 space-y-4">
+                  {/* Detailed Narrative Paragraph */}
+                  <div className="p-3.5 bg-black/80 border border-neutral-800/90 rounded text-neutral-300">
+                    <span className="block font-mono text-[9px] uppercase tracking-wider text-neutral-400 mb-1.5 flex items-center">
+                      <FileText className="w-2.5 h-2.5 mr-1 text-white" />
+                      PRODUCT ARCHITECTURE & SCOPE
+                    </span>
+                    <p className="text-xs font-light leading-relaxed text-neutral-300">
+                      {details.detailedParagraph}
+                    </p>
+                  </div>
+
+                  {/* Complete Deliverables Matrix */}
+                  <div>
+                    <span className="block font-mono text-[9px] uppercase tracking-wider text-neutral-400 mb-2">
+                      ALL DELIVERABLES & ARTIFACTS:
+                    </span>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                      {service.deliverables.map((item, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-center text-[11px] text-neutral-300 font-light"
+                        >
+                          <Check className="w-3 h-3 text-neutral-400 mr-1.5 shrink-0" />
+                          <span className="truncate">{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Full Target Tech Stack */}
+                  <div>
+                    <span className="block font-mono text-[9px] uppercase tracking-wider text-neutral-400 mb-1.5">
+                      TARGET TECH ECOSYSTEM:
+                    </span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {service.techStack.map((tech) => (
+                        <span
+                          key={tech}
+                          className="font-mono text-[9px] px-2 py-0.5 rounded bg-neutral-900 border border-neutral-800 text-neutral-300"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Dual Action Buttons */}
+                  <div className="grid grid-cols-2 gap-2 pt-2">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleScrollToSection('estimator');
+                      }}
+                      className="p-2 bg-neutral-900 border border-neutral-800 hover:border-neutral-500 hover:bg-neutral-850 text-white font-mono text-[10px] uppercase tracking-wider flex items-center justify-center transition-colors cursor-pointer"
+                    >
+                      <Calculator className="w-3 h-3 mr-1.5 text-neutral-400" />
+                      <span>Model Scope</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleScrollToSection('contact');
+                      }}
+                      className="p-2 bg-white text-black hover:bg-neutral-200 font-mono text-[10px] uppercase tracking-wider font-semibold flex items-center justify-center transition-colors cursor-pointer"
+                    >
+                      <Send className="w-3 h-3 mr-1.5 text-black" />
+                      <span>Start Inquiry</span>
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
-        {/* Action Link Footer */}
-        <div className="pt-3.5 border-t border-neutral-900 flex items-center justify-between text-xs font-mono uppercase tracking-wider text-neutral-300 group-hover:text-white transition-colors">
+        {/* Card Footer Expand/Collapse Trigger */}
+        <div
+          onClick={onToggle}
+          className="pt-3.5 border-t border-neutral-900 flex items-center justify-between text-xs font-mono uppercase tracking-wider text-neutral-400 group-hover:text-white transition-colors cursor-pointer"
+        >
           <span className="inline-flex items-center">
-            <Plus className="w-3.5 h-3.5 mr-1.5 text-neutral-400 group-hover:text-white transition-colors" />
-            View Specifications
+            {isExpanded ? (
+              <>
+                <Minus className="w-3.5 h-3.5 mr-1.5 text-white" />
+                <span>Collapse Overview</span>
+              </>
+            ) : (
+              <>
+                <Plus className="w-3.5 h-3.5 mr-1.5 text-neutral-400 group-hover:text-white transition-colors" />
+                <span>Expand Full Details</span>
+              </>
+            )}
           </span>
-          <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1.5 text-neutral-400 group-hover:text-white" />
+          <ArrowRight
+            className={`w-3.5 h-3.5 transition-transform duration-300 ${
+              isExpanded
+                ? '-rotate-90 text-white'
+                : 'group-hover:translate-x-1.5 text-neutral-400 group-hover:text-white'
+            }`}
+          />
         </div>
       </div>
     </div>
@@ -190,143 +392,10 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
 };
 
 export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
-  const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
-  const getServiceConfig = (id: string) => {
-    switch (id) {
-      case 'software-dev':
-        return {
-          systemTag: 'CORE ARCHITECTURE',
-          icon: <Code2 className="w-4 h-4" />,
-          microStage: (
-            <div className="p-3 bg-neutral-900/60 border border-neutral-800/80 rounded">
-              <span className="block font-mono text-[9px] uppercase tracking-wider text-neutral-400 mb-2 flex items-center">
-                <Activity className="w-2.5 h-2.5 mr-1 text-white" />
-                SYSTEM DATA PIPELINE
-              </span>
-              <div className="grid grid-cols-4 gap-1 text-center font-mono text-[9px]">
-                <div className="p-1.5 bg-neutral-950 border border-neutral-800 rounded text-neutral-200">
-                  Client
-                </div>
-                <div className="p-1.5 bg-neutral-950 border border-neutral-800 rounded text-neutral-200">
-                  Gateway
-                </div>
-                <div className="p-1.5 bg-neutral-950 border border-neutral-800 rounded text-neutral-200">
-                  Logic
-                </div>
-                <div className="p-1.5 bg-neutral-950 border border-neutral-800 rounded text-neutral-200">
-                  DB
-                </div>
-              </div>
-            </div>
-          ),
-        };
-      case 'software-enhancement':
-        return {
-          systemTag: 'MODERNIZATION',
-          icon: <RefreshCw className="w-4 h-4" />,
-          microStage: (
-            <div className="p-3 bg-neutral-900/60 border border-neutral-800/80 rounded flex items-center justify-between">
-              <div>
-                <span className="block font-mono text-[9px] text-neutral-400 uppercase">SPEED GAIN</span>
-                <span className="font-mono text-xs text-white font-semibold">⚡ Up to 3.5x Faster</span>
-              </div>
-              <div className="text-right">
-                <span className="block font-mono text-[9px] text-neutral-400 uppercase">MIGRATION</span>
-                <span className="font-mono text-[10px] text-neutral-300">Zero Downtime</span>
-              </div>
-            </div>
-          ),
-        };
-      case 'academic-projects':
-        return {
-          systemTag: 'ACADEMIC ENGINEERING',
-          icon: <GraduationCap className="w-4 h-4" />,
-          microStage: (
-            <div className="p-2.5 bg-neutral-900/60 border border-neutral-800/80 rounded flex items-center justify-between font-mono text-[10px]">
-              <span className="text-neutral-300">✓ SRS Spec</span>
-              <span className="text-neutral-600">|</span>
-              <span className="text-neutral-300">✓ Source Repo</span>
-              <span className="text-neutral-600">|</span>
-              <span className="text-neutral-300">✓ Viva Prep</span>
-            </div>
-          ),
-        };
-      case 'mobile-dev':
-        return {
-          systemTag: 'MOBILE ECOSYSTEM',
-          icon: <Smartphone className="w-4 h-4" />,
-          microStage: (
-            <div className="grid grid-cols-2 gap-2">
-              <div className="p-2 bg-neutral-900/60 border border-neutral-800 rounded text-center">
-                <span className="block font-mono text-[10px] text-white">iOS & Android</span>
-                <span className="block font-mono text-[8px] text-neutral-400">Native Feel</span>
-              </div>
-              <div className="p-2 bg-neutral-900/60 border border-neutral-800 rounded text-center">
-                <span className="block font-mono text-[10px] text-white">Offline-First</span>
-                <span className="block font-mono text-[8px] text-neutral-400">Local DB Sync</span>
-              </div>
-            </div>
-          ),
-        };
-      case 'web-dev':
-        return {
-          systemTag: 'PERFORMANCE WEB',
-          icon: <Globe className="w-4 h-4" />,
-          microStage: (
-            <div className="p-2.5 bg-neutral-900/60 border border-neutral-800/80 rounded">
-              <div className="flex items-center justify-between mb-1.5 font-mono text-[8px] text-neutral-400">
-                <span className="flex items-center text-white">
-                  <Zap className="w-2.5 h-2.5 mr-1 text-white" />
-                  CORE WEB VITALS
-                </span>
-                <span>AUDIT 100/100</span>
-              </div>
-              <div className="grid grid-cols-4 gap-1 text-center font-mono">
-                <div className="p-1 bg-neutral-950 border border-neutral-800 rounded text-[9px] text-white">
-                  100 <span className="block text-[7px] text-neutral-400">PERF</span>
-                </div>
-                <div className="p-1 bg-neutral-950 border border-neutral-800 rounded text-[9px] text-white">
-                  100 <span className="block text-[7px] text-neutral-400">A11Y</span>
-                </div>
-                <div className="p-1 bg-neutral-950 border border-neutral-800 rounded text-[9px] text-white">
-                  100 <span className="block text-[7px] text-neutral-400">BEST</span>
-                </div>
-                <div className="p-1 bg-neutral-950 border border-neutral-800 rounded text-[9px] text-white">
-                  100 <span className="block text-[7px] text-neutral-400">SEO</span>
-                </div>
-              </div>
-            </div>
-          ),
-        };
-      case 'end-to-end':
-        return {
-          systemTag: 'LIFECYCLE SHIP 0→1',
-          icon: <Rocket className="w-4 h-4" />,
-          microStage: (
-            <div className="p-2.5 bg-neutral-900/60 border border-neutral-800/80 rounded font-mono text-[8px]">
-              <span className="block uppercase text-neutral-400 mb-1.5">
-                DELIVERY PIPELINE:
-              </span>
-              <div className="flex items-center justify-between text-neutral-400">
-                <span className="text-white font-medium">DISCOVER</span>
-                <span>→</span>
-                <span>PLAN</span>
-                <span>→</span>
-                <span>BUILD</span>
-                <span>→</span>
-                <span className="text-white font-medium">SHIP</span>
-              </div>
-            </div>
-          ),
-        };
-      default:
-        return {
-          systemTag: 'PRACTICE AREA',
-          icon: <Code2 className="w-4 h-4" />,
-          microStage: null,
-        };
-    }
+  const toggleExpand = (id: string) => {
+    setExpandedId((prev) => (prev === id ? null : id));
   };
 
   return (
@@ -337,32 +406,28 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
           <div>
             <div className="font-mono text-xs uppercase tracking-widest text-neutral-400 mb-3 flex items-center">
               <span className="w-2 h-2 bg-white mr-2" />
-              01 // WHAT WE DO
+              01 // CORE PRACTICE AREAS
             </div>
             <h2 className="text-3xl sm:text-5xl font-light tracking-tight text-white">
               Engineering Digital Reality
             </h2>
           </div>
           <p className="mt-4 md:mt-0 text-neutral-400 max-w-sm text-sm sm:text-base leading-relaxed font-light">
-            End-to-end technical engineering from initial scoping to production delivery.
+            Click any practice area to expand its architectural overview, complete deliverables matrix, and execution specifications.
           </p>
         </div>
 
         {/* Clean, Symmetrical 3-Column Grid Alignment (Original First Alignment) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {servicesData.map((service) => {
-            const config = getServiceConfig(service.id);
-            return (
-              <ServiceCard
-                key={service.id}
-                service={service}
-                systemTag={config.systemTag}
-                icon={config.icon}
-                microStage={config.microStage}
-                onOpen={() => setSelectedService(service)}
-              />
-            );
-          })}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
+          {servicesData.map((service) => (
+            <ExpandableServiceCard
+              key={service.id}
+              service={service}
+              isExpanded={expandedId === service.id}
+              onToggle={() => toggleExpand(service.id)}
+              onSelectService={onSelectService}
+            />
+          ))}
         </div>
 
         {/* Bottom Banner Note */}
@@ -382,16 +447,6 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
           </button>
         </div>
       </div>
-
-      {/* Service Deep-Dive Modal */}
-      <ServiceModal
-        service={selectedService}
-        onClose={() => setSelectedService(null)}
-        onInquire={(title) => {
-          setSelectedService(null);
-          onSelectService(title);
-        }}
-      />
     </section>
   );
 };
