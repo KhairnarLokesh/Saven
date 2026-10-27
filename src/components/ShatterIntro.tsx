@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import { ShatterType, ShatterTypeHandle } from './ShatterType';
 
@@ -20,6 +20,27 @@ export const ShatterIntro: React.FC<ShatterIntroProps> = ({
   const [isExiting, setIsExiting] = useState(false);
   const shatterRef = useRef<ShatterTypeHandle>(null);
   const hasTriggeredExitRef = useRef(false);
+
+  const triggerExit = useCallback(() => {
+    if (hasTriggeredExitRef.current) return;
+    hasTriggeredExitRef.current = true;
+
+    setStage('shatter');
+
+    // Trigger full 3D glass shatter explosion
+    shatterRef.current?.shatterAll();
+
+    // Fade out overlay as shards scatter away
+    setTimeout(() => {
+      setIsExiting(true);
+    }, 700);
+
+    // Call onComplete after transition finishes
+    setTimeout(() => {
+      document.body.style.overflow = '';
+      onComplete();
+    }, 1300);
+  }, [onComplete]);
 
   useEffect(() => {
     // Lock body scroll while intro is visible
@@ -42,28 +63,7 @@ export const ShatterIntro: React.FC<ShatterIntroProps> = ({
       clearTimeout(exitTimer);
       document.body.style.overflow = '';
     };
-  }, [autoExitDelay]);
-
-  const triggerExit = () => {
-    if (hasTriggeredExitRef.current) return;
-    hasTriggeredExitRef.current = true;
-
-    setStage('shatter');
-
-    // Trigger full 3D glass shatter explosion
-    shatterRef.current?.shatterAll();
-
-    // Fade out overlay as shards scatter away
-    setTimeout(() => {
-      setIsExiting(true);
-    }, 700);
-
-    // Call onComplete after transition finishes
-    setTimeout(() => {
-      document.body.style.overflow = '';
-      onComplete();
-    }, 1300);
-  };
+  }, [autoExitDelay, triggerExit]);
 
   const handleContainerClick = () => {
     // Click anywhere on screen to trigger shatter immediately
@@ -164,14 +164,14 @@ export const ShatterIntro: React.FC<ShatterIntroProps> = ({
         }
       `}</style>
 
-      {/* Background ambient radial glow */}
+      {/* Background ambient radial glow - expansive full-screen depth */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[720px] h-[450px] bg-gradient-to-b from-blue-900/15 via-purple-900/10 to-transparent blur-[140px] rounded-full" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[160vw] h-[130vh] max-w-none bg-[radial-gradient(ellipse_80%_60%_at_50%_50%,rgba(37,99,235,0.16),rgba(59,130,246,0.06)_45%,transparent_75%)] blur-[100px] pointer-events-none" />
       </div>
 
-      {/* Main Display Stage */}
-      <div className="relative z-10 w-full max-w-7xl h-[65vh] sm:h-[75vh] flex items-center justify-center">
-        {/* Layer 1: Three.js 3D Shatter Type (WebGL canvas) - ready for instant 3D shatter explosion */}
+      {/* Main Display Stage - Full screen viewport, zero letterboxing / video-like borders */}
+      <div className="absolute inset-0 w-full h-full flex items-center justify-center overflow-hidden">
+        {/* Layer 1: Three.js 3D Shatter Type (WebGL canvas) - full viewport coverage */}
         <div
           className={`absolute inset-0 w-full h-full transition-opacity duration-200 ${
             stage === 'shatter' ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
@@ -194,9 +194,9 @@ export const ShatterIntro: React.FC<ShatterIntroProps> = ({
             heal={0.9}
             shatter={true}
             shatterRadius={0.7}
-            force={1.4}
-            spin={1.5}
-            depth={1.6}
+            force={1.5}
+            spin={1.6}
+            depth={1.8}
             glint={1.4}
             intro="none"
             autoplay={false}
@@ -207,20 +207,20 @@ export const ShatterIntro: React.FC<ShatterIntroProps> = ({
 
         {/* Layer 2: Pristine Crisp SVG/Image & Sparkle Display (Active before shatter) */}
         <div
-          className={`relative z-20 flex flex-col items-center justify-center transition-opacity duration-150 ${
+          className={`relative z-20 flex flex-col items-center justify-center transition-opacity duration-150 px-4 sm:px-8 w-full ${
             stage === 'shatter' ? 'opacity-0 pointer-events-none' : 'opacity-100'
           }`}
         >
-          {/* Logo Container */}
-          <div className="relative inline-block">
+          {/* Logo Container - spans full prominent width across screen */}
+          <div className="relative inline-block max-w-[1500px] w-[92vw] sm:w-[90vw] md:w-[88vw] lg:w-[86vw]">
             {/* Exact Brand Wordmark: SAVEN with dots Ś À V̇ Ė Ṅ */}
             <Image
               src="/saven-logo-transparent.png"
               alt="SAVEN"
-              width={760}
-              height={126}
+              width={1500}
+              height={249}
               priority
-              className="w-[310px] sm:w-[480px] md:w-[640px] lg:w-[760px] h-auto object-contain select-none transition-transform duration-700 ease-out"
+              className="w-full h-auto object-contain select-none transition-transform duration-700 ease-out"
             />
 
             {/* Sparkle Glint Flare on the letter 'N' and its dot */}
@@ -234,14 +234,14 @@ export const ShatterIntro: React.FC<ShatterIntroProps> = ({
                 }}
               >
                 {/* Radiant Ambient Bloom */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-28 h-28 sm:w-36 sm:h-36 rounded-full bg-blue-400/25 blur-xl animate-pulse" />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white/40 blur-md" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 sm:w-44 sm:h-44 rounded-full bg-blue-400/25 blur-xl animate-pulse" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 sm:w-28 sm:h-28 rounded-full bg-white/40 blur-md" />
 
                 {/* Primary 4-point Diamond Star Flare */}
                 <div className="relative flex items-center justify-center animate-sparkle-spin">
                   <svg
                     viewBox="0 0 100 100"
-                    className="w-14 h-14 sm:w-20 sm:h-20 text-white drop-shadow-[0_0_14px_rgba(255,255,255,1)] drop-shadow-[0_0_28px_rgba(142,197,255,0.95)]"
+                    className="w-16 h-16 sm:w-24 sm:h-24 lg:w-32 lg:h-32 text-white drop-shadow-[0_0_16px_rgba(255,255,255,1)] drop-shadow-[0_0_32px_rgba(142,197,255,0.95)]"
                     fill="currentColor"
                   >
                     <path d="M50 0 C50 34 34 50 0 50 C34 50 50 66 50 100 C50 66 66 50 100 50 C66 50 50 34 50 0 Z" />
@@ -250,21 +250,21 @@ export const ShatterIntro: React.FC<ShatterIntroProps> = ({
                   {/* Secondary 45° Diagonal Ray Flare */}
                   <svg
                     viewBox="0 0 100 100"
-                    className="absolute w-9 h-9 sm:w-12 sm:h-12 text-blue-200 rotate-45 opacity-90"
+                    className="absolute w-10 h-10 sm:w-16 sm:h-16 lg:w-20 lg:h-20 text-blue-200 rotate-45 opacity-90"
                     fill="currentColor"
                   >
                     <path d="M50 8 C50 36 36 50 8 50 C36 50 50 64 50 92 C50 64 64 50 92 50 C64 50 50 36 50 8 Z" />
                   </svg>
 
                   {/* Super-bright pinpoint center */}
-                  <div className="absolute w-2 h-2 rounded-full bg-white shadow-[0_0_12px_#ffffff]" />
+                  <div className="absolute w-3 h-3 rounded-full bg-white shadow-[0_0_16px_#ffffff]" />
                 </div>
 
                 {/* Orbiting Stardust Sparkles */}
-                <span className="absolute -top-3.5 -right-3 text-cyan-200 text-sm animate-ping opacity-80">
+                <span className="absolute -top-4 -right-4 text-cyan-200 text-sm sm:text-base animate-ping opacity-80">
                   ✦
                 </span>
-                <span className="absolute -bottom-3 -left-3 text-white text-xs animate-pulse opacity-90">
+                <span className="absolute -bottom-4 -left-4 text-white text-xs sm:text-sm animate-pulse opacity-90">
                   ✧
                 </span>
               </div>
@@ -273,16 +273,16 @@ export const ShatterIntro: React.FC<ShatterIntroProps> = ({
 
           {/* STUDIOS Subtitle with Sparkle Shimmer Sweep */}
           <div
-            className={`relative flex items-center justify-center transition-all duration-700 ease-out mt-4 sm:mt-6 md:mt-7 ${
+            className={`relative flex items-center justify-center transition-all duration-700 ease-out mt-5 sm:mt-7 md:mt-8 lg:mt-9 ${
               stage === 'studios-sparkle'
                 ? 'opacity-100 translate-y-0'
                 : 'opacity-0 translate-y-2'
             }`}
           >
-            <div className="relative inline-block overflow-hidden px-8 py-2">
+            <div className="relative inline-block overflow-hidden px-10 py-2.5">
               {/* Crisp STUDIOS Typography */}
               <span
-                className="block font-light text-white tracking-[0.45em] sm:tracking-[0.55em] text-xs sm:text-base md:text-lg uppercase select-none relative z-10"
+                className="block font-light text-white tracking-[0.48em] sm:tracking-[0.55em] text-sm sm:text-lg md:text-xl lg:text-2xl uppercase select-none relative z-10"
                 style={{
                   fontFamily: "'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif",
                 }}
@@ -306,15 +306,15 @@ export const ShatterIntro: React.FC<ShatterIntroProps> = ({
               {stage === 'studios-sparkle' && (
                 <>
                   {/* Glint on 'S' */}
-                  <span className="absolute top-1 left-9 text-xs text-blue-200 animate-sparkle-pop-1 pointer-events-none">
+                  <span className="absolute top-1 left-9 text-xs sm:text-sm text-blue-200 animate-sparkle-pop-1 pointer-events-none">
                     ✦
                   </span>
                   {/* Glint on 'D' */}
-                  <span className="absolute bottom-1.5 left-1/2 -translate-x-1/2 text-xs text-white animate-sparkle-pop-2 pointer-events-none">
+                  <span className="absolute bottom-1.5 left-1/2 -translate-x-1/2 text-xs sm:text-sm text-white animate-sparkle-pop-2 pointer-events-none">
                     ✧
                   </span>
                   {/* Glint on final 'S' (aligned right under the N) */}
-                  <span className="absolute top-1 right-9 text-xs text-cyan-200 animate-sparkle-pop-3 pointer-events-none">
+                  <span className="absolute top-1 right-9 text-xs sm:text-sm text-cyan-200 animate-sparkle-pop-3 pointer-events-none">
                     ✦
                   </span>
                 </>

@@ -663,19 +663,42 @@ export const ShatterType = forwardRef<ShatterTypeHandle, ShatterTypeProps>(funct
         const imgAspect = (img.naturalWidth || 584) / (img.naturalHeight || 97);
         const sub = (cfg.subText ?? '').trim();
 
-        // Large prominent logo sizing: up to 88% width or 920px max
-        const maxLogoW = Math.min(w * 0.88, 920);
+        // Full-width cinematic brand sizing matching Layer 2 responsive styling
+        let targetWidthRatio = 0.92;
+        if (w >= 1024) {
+          targetWidthRatio = 0.86;
+        } else if (w >= 768) {
+          targetWidthRatio = 0.88;
+        } else if (w >= 640) {
+          targetWidthRatio = 0.90;
+        }
+
+        const maxLogoW = Math.min(w * targetWidthRatio, 1500);
         let drawLogoW = maxLogoW;
         let drawLogoH = drawLogoW / imgAspect;
 
-        const maxAllowedH = sub ? h * 0.44 : h * 0.6;
+        const maxAllowedH = sub ? h * 0.48 : h * 0.65;
         if (drawLogoH > maxAllowedH) {
           drawLogoH = maxAllowedH;
           drawLogoW = drawLogoH * imgAspect;
         }
 
-        const subFontSize = Math.max(14, Math.round(drawLogoH * 0.28));
-        const gap = Math.round(drawLogoH * 0.32);
+        const subFontSize = Math.max(
+          13,
+          w >= 1024
+            ? Math.min(Math.round(drawLogoH * 0.11), 26)
+            : w >= 640
+            ? Math.round(drawLogoH * 0.13)
+            : 13
+        );
+        const gap = Math.max(
+          16,
+          w >= 1024
+            ? Math.min(Math.round(drawLogoH * 0.15), 38)
+            : w >= 640
+            ? Math.round(drawLogoH * 0.15)
+            : 18
+        );
         const totalBlockH = sub ? drawLogoH + gap + subFontSize : drawLogoH;
 
         const startY = (h - totalBlockH) / 2;
@@ -1051,7 +1074,7 @@ export const ShatterType = forwardRef<ShatterTypeHandle, ShatterTypeProps>(funct
       for (let sIdx = 0; sIdx < count; sIdx++) {
         let t0 = validTriangles[3 * sIdx];
         let t1 = validTriangles[3 * sIdx + 1];
-        let t2 = validTriangles[3 * sIdx + 2];
+        const t2 = validTriangles[3 * sIdx + 2];
 
         // Ensure CCW vertex winding
         if (
@@ -1177,7 +1200,7 @@ export const ShatterType = forwardRef<ShatterTypeHandle, ShatterTypeProps>(funct
       if (hitAny) requestRender();
     };
 
-    const triggerShatterAll = (now: number, forceMult = 1.4) => {
+    const triggerShatterAll = (now: number, forceMult = 1.5) => {
       const cfg = configRef.current;
       if (!shardCount || cfg.reduced) return;
 
@@ -1192,19 +1215,19 @@ export const ShatterType = forwardRef<ShatterTypeHandle, ShatterTypeProps>(funct
         const dist = Math.hypot(dx, dy) || 1;
         const normX = dx / dist;
         const normY = dy / dist;
-        const impulse = userForce * (220 + 440 * prng()) * scaleFactor;
+        const impulse = userForce * (360 + 680 * prng()) * scaleFactor;
 
         shardState[i] = 1; // shattered
         animMode[i] = 1;
-        shatterDelay[i] = now + (dist / (canvasWidth * 0.45)) * 0.05 + prng() * 0.04;
+        shatterDelay[i] = now + (dist / (canvasWidth * 0.45)) * 0.04 + prng() * 0.03;
         introStartTime[i] = Infinity; // Fly away freely on exit without snapping back
 
-        velX[i] = normX * impulse + (prng() - 0.5) * 120 * userForce * scaleFactor;
-        velY[i] = normY * impulse + (prng() - 0.5) * 120 * userForce * scaleFactor;
-        velZ[i] = userDepth * (420 + 850 * prng()) * scaleFactor;
-        angVelX[i] = (prng() - 0.5) * 2 * userSpin * (3.5 + 7 * prng());
-        angVelY[i] = (prng() - 0.5) * 2 * userSpin * (3.5 + 7 * prng());
-        angVelZ[i] = (prng() - 0.5) * 2 * userSpin * (1.8 + 4.5 * prng());
+        velX[i] = normX * impulse * 1.5 + (prng() - 0.5) * 300 * userForce * scaleFactor;
+        velY[i] = normY * impulse * 1.2 + (prng() - 0.5) * 220 * userForce * scaleFactor;
+        velZ[i] = userDepth * (550 + 1100 * prng()) * scaleFactor;
+        angVelX[i] = (prng() - 0.5) * 2 * userSpin * (3.8 + 7.5 * prng());
+        angVelY[i] = (prng() - 0.5) * 2 * userSpin * (3.8 + 7.5 * prng());
+        angVelZ[i] = (prng() - 0.5) * 2 * userSpin * (2.0 + 5.0 * prng());
         crackAmount[i] = 0.8;
       }
 
@@ -1219,8 +1242,8 @@ export const ShatterType = forwardRef<ShatterTypeHandle, ShatterTypeProps>(funct
       const entranceStiffness =
         7.5 / Math.max(0.15, 0.55 * clamp(finite(cfg.introDuration, 1.6), 0.2, 6));
       const gravityAcc = 1500 * clamp(finite(cfg.gravity, 0), 0, 4);
-      const velDrag = Math.exp(-2.6 * stepDt);
-      const angDrag = Math.exp(-0.7 * stepDt);
+      const velDrag = Math.exp(-1.5 * stepDt);
+      const angDrag = Math.exp(-0.5 * stepDt);
       const healRate = 1 / Math.max(0.05, finite(cfg.heal, 0.9));
       const crackLevel = clamp(finite(cfg.crack, 0.6), 0, 1);
       const crackRadPx = clamp(finite(cfg.crackRadius, 0.5), 0.05, 4) * headlineFontSize;
