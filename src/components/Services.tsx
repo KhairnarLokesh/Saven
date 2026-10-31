@@ -6,7 +6,6 @@ import {
   Plus,
   Minus,
   Check,
-  Calculator,
   Send,
   ArrowRight,
 } from 'lucide-react';
@@ -256,17 +255,6 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
 
                         {/* Direct Action Triggers */}
                         <div className="flex flex-wrap items-center gap-3 pt-3">
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleScrollToSection(item.title, 'estimator');
-                            }}
-                            className="px-5 py-2.5 bg-neutral-900 border border-neutral-700 hover:border-white text-white font-mono text-xs uppercase tracking-wider flex items-center transition-colors cursor-pointer"
-                          >
-                            <Calculator className="w-3.5 h-3.5 mr-2 text-neutral-400" />
-                            <span>Model in Scope Estimator</span>
-                          </button>
                           <button
                             type="button"
                             onClick={(e) => {

@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { principles, techCapabilities } from '@/data/about';
-import { Compass, Check } from 'lucide-react';
+import { principles } from '@/data/about';
+import { Compass } from 'lucide-react';
 
 export const About: React.FC = () => {
   return (
@@ -12,7 +12,7 @@ export const About: React.FC = () => {
         <div className="max-w-3xl mb-16">
           <div className="font-mono text-xs uppercase tracking-widest text-neutral-400 mb-3 flex items-center">
             <Compass className="w-3.5 h-3.5 mr-2 text-white" />
-            05 // ABOUT SAVEN
+            02 // ABOUT SAVEN
           </div>
           <h2 className="text-3xl sm:text-5xl font-light tracking-tight text-white mb-6">
             Technology With Purpose.
@@ -23,7 +23,7 @@ export const About: React.FC = () => {
         </div>
 
         {/* Four Core Principles Grid */}
-        <div className="mb-20">
+        <div>
           <h3 className="text-xs font-mono uppercase tracking-widest text-neutral-500 mb-6">
             FOUNDATIONAL ENGINEERING PRINCIPLES
           </h3>
@@ -38,39 +38,6 @@ export const About: React.FC = () => {
                 </span>
                 <h4 className="text-lg font-medium text-white mb-2">{p.title}</h4>
                 <p className="text-xs text-neutral-400 leading-relaxed font-light">{p.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Tech Stack Capabilities Matrix */}
-        <div className="p-8 bg-neutral-950 border border-neutral-800">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 mb-6 border-b border-neutral-900">
-            <div>
-              <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 block mb-1">
-                CAPABILITY MATRIX
-              </span>
-              <h3 className="text-xl font-light text-white">Full-Stack Ecosystems We Command</h3>
-            </div>
-            <span className="text-xs font-mono text-neutral-500 mt-2 sm:mt-0">
-              MODERN · TESTED · MAINTAINABLE
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {techCapabilities.map((cat, idx) => (
-              <div key={idx} className="space-y-3">
-                <div className="text-xs font-mono uppercase tracking-wider text-neutral-400 pb-1 border-b border-neutral-900">
-                  {cat.category}
-                </div>
-                <div className="space-y-1.5">
-                  {cat.items.map((item, itemIdx) => (
-                    <div key={itemIdx} className="flex items-center text-xs text-neutral-300">
-                      <Check className="w-3.5 h-3.5 text-white mr-2 shrink-0" />
-                      <span>{item}</span>
-                    </div>
-                  ))}
-                </div>
               </div>
             ))}
           </div>
