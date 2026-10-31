@@ -108,7 +108,13 @@ export const Contact: React.FC<ContactProps> = ({
         });
       } else {
         setStatus('error');
-        setErrorMessage(data.error || 'Failed to submit inquiry. Please reach out via email directly.');
+        const firstFieldError = data.errors ? Object.values(data.errors)[0] : null;
+        setErrorMessage(
+          (firstFieldError as string) ||
+          data.message ||
+          data.error ||
+          'Failed to submit inquiry. Please reach out via email directly.'
+        );
       }
     } catch {
       setStatus('error');

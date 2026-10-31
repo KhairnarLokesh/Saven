@@ -70,10 +70,6 @@ export const Hero: React.FC<HeroProps> = ({ onExploreServices }) => {
       </div>
 
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center">
-        {/* Supporting Label / Badge */}
-        <div className="inline-flex items-center px-3 py-1.5 mb-6 border border-neutral-800 bg-neutral-950/80 rounded-full text-xs font-mono tracking-widest text-neutral-300 uppercase shadow-inner">
-          <span>{siteConfig.badge}</span>
-        </div>
 
         {/* Main Headline */}
         <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-light tracking-tight text-white max-w-5xl mx-auto leading-[1.08] mb-6">
