@@ -1,12 +1,3 @@
-export interface ProcessStep {
-  step: string;
-  title: string;
-  subhead: string;
-  description: string;
-  duration: string;
-  deliverables: string[];
-}
-
 export interface Principle {
   number: string;
   title: string;

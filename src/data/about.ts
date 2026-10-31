@@ -23,10 +23,3 @@ export const principles: Principle[] = [
   },
 ];
 
-
-export const techCapabilities = [
-  { category: 'Frontend', items: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'Framer Motion', 'WebSockets'] },
-  { category: 'Backend & APIs', items: ['Node.js', 'Go', 'Python / FastAPI', 'RESTful APIs', 'GraphQL', 'gRPC'] },
-  { category: 'Data & Storage', items: ['PostgreSQL', 'Redis', 'MongoDB', 'Supabase', 'SQLite', 'Prisma / Drizzle'] },
-  { category: 'Mobile & Cloud', items: ['React Native', 'Expo', 'Docker', 'AWS / Vercel', 'CI/CD Pipelines', 'Linux'] },
-];

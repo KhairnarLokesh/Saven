@@ -18,7 +18,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onStartProject }) => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 30);
 
-      const sections = ['home', 'services', 'estimator', 'process', 'about', 'contact'];
+      const sections = ['home', 'services', 'about', 'contact'];
       const scrollPos = window.scrollY + 120;
 
       for (const section of sections) {
