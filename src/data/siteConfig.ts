@@ -3,7 +3,6 @@ export const siteConfig = {
   legalName: 'SAVEN Digital Solutions Agency',
   tagline: 'Your Ambition, Our Architecture.',
   subTagline: 'Build. Enhance. Evolve.',
-  badge: 'SOFTWARE DEVELOPMENT · DIGITAL SOLUTIONS',
   heroHeadline: 'Your Ambition, Our Architecture.',
   heroDescription:
     'We design and develop modern websites, custom software, and digital products that help businesses turn ideas into real-world solutions.',

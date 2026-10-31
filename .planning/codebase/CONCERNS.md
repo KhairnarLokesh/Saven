@@ -4,31 +4,15 @@ This document catalogs technical debt, architectural risks, performance bottlene
 
 ---
 
-## 1. Critical Bugs & Contract Inconsistencies
+## 1. Resolved Bugs & Contract Fixes (Phase 02)
 
-### A. Contact Form API Response Key Mismatch
-- **Location:** [src/components/Contact.tsx](file:///k:/Coding%20Projects/Saven/src/components/Contact.tsx#L111) vs. [src/app/api/contact/route.ts](file:///k:/Coding%20Projects/Saven/src/app/api/contact/route.ts#L31)
-- **Issue:** When the server returns validation errors or failure status, the route handler responds with:
-  ```json
-  { "success": false, "message": "Validation failed...", "errors": { ... } }
-  ```
-  However, `Contact.tsx` inspects `data.error`:
-  ```typescript
-  setErrorMessage(data.error || 'Failed to submit inquiry. Please reach out via email directly.');
-  ```
-  Because `data.error` is `undefined`, the user never receives the specific server validation error message and is presented with a generic failure notice.
-- **Remediation:** Update `Contact.tsx` to read `data.message` and map `data.errors` to form field indicators.
+### A. Contact Form API Response Contract [RESOLVED]
+- **Resolved in:** [src/components/Contact.tsx](file:///k:/Coding%20Projects/Saven/src/components/Contact.tsx#L110-L117)
+- **Fix:** Contact form now consumes `data.message`, `data.errors` field-level feedback, and `data.error` fallback. Detailed server validation reasons are now accurately rendered.
 
-### B. Invalid Sitemap Hash Fragment URLs
-- **Location:** [src/app/sitemap.ts](file:///k:/Coding%20Projects/Saven/src/app/sitemap.ts#L15-L44)
-- **Issue:** The sitemap generator produces URLs containing fragment identifiers:
-  ```typescript
-  { url: `${baseUrl}/#services`, ... }
-  { url: `${baseUrl}/#estimator`, ... }
-  { url: `${baseUrl}/#process`, ... }
-  ```
-  Per standard XML sitemap specifications (sitemaps.org) and search engine guidelines (Google / Bing), fragment identifiers (`#`) are client-side only and are either stripped or flagged as invalid in Google Search Console.
-- **Remediation:** Sitemaps should only list distinct canonical page URLs (or separate route pages if converted to multi-page in the future).
+### B. Sitemap Hash Fragment Removal [RESOLVED]
+- **Resolved in:** [src/app/sitemap.ts](file:///k:/Coding%20Projects/Saven/src/app/sitemap.ts)
+- **Fix:** Purged all non-standard client anchor fragment URLs (`#services`, `#estimator`, etc.). Sitemap strictly serves standard canonical routes matching sitemaps.org guidelines.
 
 ---
 
@@ -56,28 +40,17 @@ This document catalogs technical debt, architectural risks, performance bottlene
 
 ---
 
-## 4. Dead Code & Orphaned Components
+## 4. Dead Code & Orphaned Components [PURGED - Phase 02]
 
-Several large, high-effort components exist in `src/components/` but are completely unreferenced in `page.tsx` or any active template:
-
-| Orphaned Component | File Path | Line Count | Notes |
-| :--- | :--- | :--- | :--- |
-| **BendingMarquee** | `src/components/ui/bending-marquee.tsx` | 418 lines | Complex 3D CSS perspective marquee; unused |
-| **SavenMeaningAnimation**| `src/components/SavenMeaningAnimation.tsx` | 149 lines | Interactive SAVEN acronym explainer; unused |
-| **TracingBeam** | `src/components/TracingBeam.tsx` | 100+ lines | Scroll-linked SVG gradient container; unused |
-| **WhyChooseUs** | `src/components/WhyChooseUs.tsx` | 70+ lines | 8-item value proposition cards; unused |
-
-- **Impact:** Increased bundle size if imported, developer confusion, and wasted maintenance surface.
-- **Remediation:** Either incorporate these components into appropriate landing sections (e.g. embed `WhyChooseUs` into `About.tsx`, insert `SavenMeaningAnimation` into the brand story) or archive/delete them.
-
----
-
-## 5. Architectural & Structural Inconsistencies
-
-### A. Inverted UI Component Re-Exports
-- `src/components/ShatterType.tsx` contains the actual 1,700-line implementation, and `src/components/ui/shatter-type.tsx` re-exports it.
-- Conversely, `src/components/ui/bending-marquee.tsx` contains the actual implementation, and `src/components/BendingMarquee.tsx` re-exports it.
-- **Remediation:** Standardize all primitives to live inside `src/components/ui/` with re-exports or direct imports adhering strictly to shadcn/ui conventions.
+All unused, orphaned components and redundant re-export shims were deleted in Phase 02:
+- `src/components/ServiceModal.tsx` (superseded by editorial accordion)
+- `src/components/WhyChooseUs.tsx` (unreferenced 8-item grid)
+- `src/components/SavenMeaningAnimation.tsx` (unreferenced acronym animation)
+- `src/components/TracingBeam.tsx` (unreferenced SVG gradient container)
+- `src/components/BendingMarquee.tsx` & `src/components/ui/bending-marquee.tsx` (unreferenced 3D perspective marquee)
+- `src/components/TextMorph.tsx` & `src/components/ui/shatter-type.tsx` (redundant re-export wrappers)
+- `src/data/services.ts` (unreferenced duplicate service definitions)
+- Boilerplate SVGs in `public/` (`file.svg`, `globe.svg`, `next.svg`, `vercel.svg`, `window.svg`)
 
 ---
 
