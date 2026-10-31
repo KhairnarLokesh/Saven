@@ -4,6 +4,27 @@ export interface Principle {
   description: string;
 }
 
+export interface Founder {
+  id: string;
+  name: string;
+  role: string;
+  specialty: string;
+  badge: string;
+  image: string;
+  imagePosition?: string;
+  accent: {
+    bg: string;
+    border: string;
+    badge: string;
+    dot: string;
+    glow: string;
+  };
+  socials: {
+    github?: string;
+    linkedin?: string;
+  };
+}
+
 export interface ContactFormData {
   fullName: string;
   email: string;

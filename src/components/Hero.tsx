@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import { siteConfig } from '@/data/siteConfig';
 import LightRays from './LightRays';
-import FlyingButton, { FlyingButtonHandle } from './FlyingButton';
 import { TextMorph } from '@/components/ui/text-morph';
+import { ArrowDown } from 'lucide-react';
 
 interface HeroProps {
   onStartProject?: () => void;
@@ -12,43 +12,6 @@ interface HeroProps {
 }
 
 export const Hero: React.FC<HeroProps> = ({ onExploreServices }) => {
-  const isLaunchingRef = useRef(false);
-  const flyingButtonRef = useRef<FlyingButtonHandle>(null);
-
-  const handleExploreServices = () => {
-    if (isLaunchingRef.current) return;
-    isLaunchingRef.current = true;
-
-    // Rocket ascends directly upwards with increasing speed, taking ~1.8s for proper display
-    setTimeout(() => {
-      onExploreServices();
-    }, 1800);
-  };
-
-  // When user scrolls back to the very top (Hero section), cleanly re-dock the rocket
-  useEffect(() => {
-    let resetTimer: NodeJS.Timeout | null = null;
-    const handleScroll = () => {
-      if (window.scrollY < 40 && isLaunchingRef.current) {
-        if (!resetTimer) {
-          resetTimer = setTimeout(() => {
-            if (window.scrollY < 60 && flyingButtonRef.current) {
-              flyingButtonRef.current.reset();
-              isLaunchingRef.current = false;
-            }
-            resetTimer = null;
-          }, 1500);
-        }
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      if (resetTimer) clearTimeout(resetTimer);
-    };
-  }, []);
-
   return (
     <section
       id="home"
@@ -70,7 +33,6 @@ export const Hero: React.FC<HeroProps> = ({ onExploreServices }) => {
       </div>
 
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center">
-
         {/* Main Headline */}
         <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-light tracking-tight text-white max-w-5xl mx-auto leading-[1.08] mb-6">
           Your Ambition, <br className="hidden sm:inline" />
@@ -80,34 +42,20 @@ export const Hero: React.FC<HeroProps> = ({ onExploreServices }) => {
         </h1>
 
         {/* Supporting Description */}
-        <p className="text-base sm:text-lg md:text-xl text-neutral-400 max-w-2xl mx-auto font-light leading-relaxed mb-2">
+        <p className="text-base sm:text-lg md:text-xl text-neutral-400 max-w-2xl mx-auto font-light leading-relaxed mb-10">
           {siteConfig.heroDescription}
         </p>
 
-        {/* Interactive Rocket Flying Button (React Bits) */}
-        <div className="relative w-full max-w-xl h-[340px] -mt-24 sm:-mt-28 mx-auto flex items-center justify-center">
-          <FlyingButton
-            ref={flyingButtonRef}
-            theme="dark"
-            size="medium"
-            altitude={1100}
-            jets={2}
-            thrusters
-            trigger="click"
-            carryCursor={false}
-            noDescend
-            smoke={1.8}
-            turbulence={1.3}
-            wobble={0.5}
-            thrustColor="#8ec5ff"
-            smokeColor="#eef1f6"
-            buttonColor="#0e0e12"
-            textColor="#ffffff"
-            radius={6}
-            onClick={handleExploreServices}
+        {/* Simple & Clean Explore Services CTA Button */}
+        <div>
+          <button
+            type="button"
+            onClick={onExploreServices}
+            className="inline-flex items-center justify-center px-8 py-3.5 bg-white text-black font-mono text-xs uppercase tracking-[0.18em] font-medium border border-white hover:bg-black hover:text-white transition-all duration-300 cursor-pointer group shadow-2xl"
           >
-            <span className="tracking-[0.14em]">Explore Our Services</span>
-          </FlyingButton>
+            <span>Explore Our Services</span>
+            <ArrowDown className="w-3.5 h-3.5 ml-2.5 transition-transform duration-300 group-hover:translate-y-1" />
+          </button>
         </div>
       </div>
     </section>

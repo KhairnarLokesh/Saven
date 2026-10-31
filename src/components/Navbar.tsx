@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Logo } from './Logo';
 import { siteConfig } from '@/data/siteConfig';
-import { ArrowUpRight, Menu, X } from 'lucide-react';
+import { Menu, X, ArrowUpRight } from 'lucide-react';
+import { Logo } from '@/components/Logo';
 
 interface NavbarProps {
   onStartProject: () => void;
@@ -95,9 +95,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onStartProject }) => {
 
           {/* Action CTA & Mobile Toggle */}
           <div className="flex items-center space-x-3">
+            {/* Desktop & Tablet CTA button (hidden on compact mobile screens to prevent awkward text wrapping) */}
             <button
               onClick={onStartProject}
-              className="group relative inline-flex items-center justify-center px-4 py-2 text-xs uppercase tracking-wider font-semibold bg-white text-black border border-white hover:bg-black hover:text-white transition-all duration-200 cursor-pointer shadow-sm"
+              className="hidden sm:inline-flex group relative items-center justify-center whitespace-nowrap px-4 py-2 text-xs uppercase tracking-wider font-semibold bg-white text-black border border-white hover:bg-black hover:text-white transition-all duration-200 cursor-pointer shadow-sm"
             >
               <span>Start a Project</span>
               <ArrowUpRight className="w-3.5 h-3.5 ml-1 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
