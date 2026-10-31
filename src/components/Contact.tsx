@@ -136,7 +136,7 @@ export const Contact: React.FC<ContactProps> = ({
         <div className="max-w-3xl mb-16 pb-8 border-b border-neutral-900">
           <div className="font-mono text-xs uppercase tracking-widest text-neutral-400 mb-3 flex items-center">
             <span className="w-2 h-2 bg-white mr-2" />
-            06 // PROJECT INTAKE
+            03 // PROJECT INTAKE
           </div>
           <h2 className="text-3xl sm:text-5xl font-light tracking-tight text-white mb-4">
             Have an Idea? Let&apos;s Build It.

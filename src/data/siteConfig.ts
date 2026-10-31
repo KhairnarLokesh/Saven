@@ -23,8 +23,6 @@ export const siteConfig = {
   navLinks: [
     { name: 'Home', href: '#home' },
     { name: 'Services', href: '#services' },
-    { name: 'Estimator', href: '#estimator' },
-    { name: 'Process', href: '#process' },
     { name: 'About', href: '#about' },
     { name: 'Contact', href: '#contact' },
   ],
