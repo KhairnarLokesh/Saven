@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { differentiators } from '@/data/about';
-import { Check, ShieldCheck } from 'lucide-react';
+import { Check } from 'lucide-react';
 
 export const WhyChooseUs: React.FC = () => {
   return (
@@ -11,10 +11,6 @@ export const WhyChooseUs: React.FC = () => {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 pb-8 border-b border-neutral-900">
           <div>
-            <div className="font-mono text-xs uppercase tracking-widest text-neutral-400 mb-3 flex items-center">
-              <ShieldCheck className="w-3.5 h-3.5 mr-2 text-white" />
-              06 // WHY SAVEN
-            </div>
             <h2 className="text-3xl sm:text-5xl font-light tracking-tight text-white">
               Built Around Your Needs.
             </h2>
@@ -34,7 +30,7 @@ export const WhyChooseUs: React.FC = () => {
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-500">
-                    BENCHMARK // {String(idx + 1).padStart(2, '0')}
+                    {String(idx + 1).padStart(2, '0')}
                   </span>
                   <div className="w-5 h-5 rounded-full border border-neutral-800 flex items-center justify-center group-hover:border-white group-hover:bg-white group-hover:text-black transition-colors">
                     <Check className="w-3 h-3 text-neutral-400 group-hover:text-black" />

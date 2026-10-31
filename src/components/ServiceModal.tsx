@@ -103,7 +103,7 @@ export const ServiceModal: React.FC<ServiceModalProps> = ({ service, onClose, on
         {/* Modal Footer / Direct Inquiry CTA */}
         <div className="mt-8 pt-6 border-t border-neutral-800 flex flex-col sm:flex-row items-center justify-between gap-4">
           <span className="text-xs text-neutral-500 font-mono">
-            REF: SVC-{service.number} {'//'} INQUIRY READY
+            SVC-{service.number}
           </span>
           <button
             onClick={() => {

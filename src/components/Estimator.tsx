@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Calculator, Check, ArrowRight, RefreshCcw, Layers } from 'lucide-react';
+import { Check, ArrowRight, RefreshCcw, Layers } from 'lucide-react';
 
 interface EstimatorProps {
   onApplyEstimate: (data: {
@@ -73,10 +73,6 @@ export const Estimator: React.FC<EstimatorProps> = ({ onApplyEstimate }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="max-w-3xl mb-12">
-          <div className="font-mono text-xs uppercase tracking-widest text-neutral-400 mb-2 flex items-center">
-            <Calculator className="w-3.5 h-3.5 mr-2 text-white" />
-            02 // INTERACTIVE SCOPE TOOL
-          </div>
           <h2 className="text-3xl sm:text-4xl font-light text-white mb-3">
             Project Scope & Architecture Estimator
           </h2>

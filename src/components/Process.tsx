@@ -18,10 +18,6 @@ export const Process: React.FC<ProcessProps> = ({ onStartProject }) => {
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 pb-8 border-b border-neutral-900">
           <div>
-            <div className="font-mono text-xs uppercase tracking-widest text-neutral-400 mb-3 flex items-center">
-              <span className="w-2 h-2 bg-white mr-2" />
-              04 // METHODOLOGY
-            </div>
             <h2 className="text-3xl sm:text-5xl font-light tracking-tight text-white">
               From Idea to Implementation.
             </h2>
