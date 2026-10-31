@@ -1,14 +1,3 @@
-export interface ServiceItem {
-  id: string;
-  number: string;
-  title: string;
-  tagline: string;
-  description: string;
-  deliverables: string[];
-  techStack: string[];
-  idealFor: string;
-}
-
 export interface ProcessStep {
   step: string;
   title: string;
