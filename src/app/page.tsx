@@ -52,7 +52,7 @@ export default function Home() {
 
 
       {/* About Section & Tech Matrix */}
-      <About />
+      <About onStartProject={scrollToContact} />
 
       {/* Contact & Project Inquiry */}
       <Contact initialService={inquiryService} />
