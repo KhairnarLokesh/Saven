@@ -263,22 +263,7 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
                           </div>
                         </div>
 
-                        {/* Tech Stack Ecosystem */}
-                        <div className="pt-2">
-                          <span className="block font-mono text-[10px] uppercase tracking-wider text-neutral-400 mb-2 font-medium">
-                            TECH ECOSYSTEM:
-                          </span>
-                          <div className="flex flex-wrap gap-2">
-                            {item.techStack.map((tech) => (
-                              <span
-                                key={tech}
-                                className="font-mono text-xs px-3 py-1 bg-neutral-900 border border-neutral-800 text-neutral-300 rounded"
-                              >
-                                {tech}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
+
 
                         {/* Direct Action Triggers */}
                         <div className="flex flex-wrap items-center gap-3 pt-3">
