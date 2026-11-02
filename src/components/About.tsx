@@ -37,47 +37,53 @@ export const About: React.FC = () => {
                 key={founder.id}
                 className={`
                   relative flex-shrink-0
-                  w-[250px] h-[470px]
-                  rounded-[125px_125px_125px_125px]
+                  w-[250px] h-[460px]
+                  rounded-[125px]
                   overflow-hidden
                   ${founder.capsuleBg}
                   ${founder.offsetClass}
-                  transition-transform duration-500
+                  transition-transform duration-300
                 `}
               >
-                {/* ── Name & designation – top-left ── */}
-                <div className="absolute top-7 left-5 right-5 z-20 pointer-events-none">
-                  <p className="text-[15px] font-bold text-[#111111] leading-tight">
+                {/* ── Name & designation – top-left inside capsule with safe padding ── */}
+                <div className="absolute top-8 left-7 right-6 z-20 pointer-events-none text-left">
+                  <h3 className="text-[15px] font-bold text-[#111111] leading-tight">
                     {founder.name}
-                  </p>
-                  <p className="text-[12px] text-[#222222] leading-tight mt-[2px]">
+                  </h3>
+                  <p className="text-[12px] text-[#222222] leading-tight mt-1">
                     {founder.role}
                   </p>
                 </div>
 
-                {/* ── Portrait image ── */}
-                <div className="absolute inset-x-0 bottom-[60px] top-[60px] z-10">
-                  <Image
-                    src={founder.image}
-                    alt={founder.name}
-                    fill
-                    sizes="250px"
-                    priority
-                    className="object-contain object-center select-none"
+                {/* ── Portrait image – occupying lower 55-60% of capsule, anchored at bottom ── */}
+                <div className="absolute inset-x-0 bottom-0 h-[275px] flex items-end justify-center pointer-events-none z-10 overflow-hidden">
+                  <div className="relative w-full h-full flex items-end justify-center">
+                    <Image
+                      src={founder.image}
+                      alt={founder.name}
+                      width={400}
+                      height={400}
+                      priority
+                      className="object-contain object-bottom select-none w-auto h-full max-w-none"
+                    />
+                  </div>
+
+                  {/* Smooth black gradient overlay fading naturally upward from the bottom */}
+                  <div
+                    className="absolute inset-x-0 bottom-0 h-36 pointer-events-none z-15 bg-gradient-to-t from-black/95 via-black/50 via-black/15 to-transparent"
+                    aria-hidden="true"
                   />
-                  {/* Bottom gradient fade over portrait */}
-                  <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
                 </div>
 
-                {/* ── Social links – bottom-center ── */}
-                <div className="absolute bottom-5 inset-x-0 flex items-center justify-center gap-2.5 z-20">
+                {/* ── Social links – bottom-center inside darkened bottom ── */}
+                <div className="absolute bottom-6 inset-x-0 flex items-center justify-center gap-2.5 z-20">
                   {founder.socials.github && (
                     <a
                       href={founder.socials.github}
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={`${founder.name} GitHub`}
-                      className="w-8 h-8 rounded-full bg-black/40 hover:bg-black/65 border border-black/20 flex items-center justify-center text-white transition-all duration-200 hover:scale-110 active:scale-95"
+                      className="w-8 h-8 rounded-full bg-black/50 hover:bg-black/75 border border-white/10 flex items-center justify-center text-white/90 hover:text-white transition-all duration-200 hover:scale-110 active:scale-95 shadow-sm"
                     >
                       <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
                         <path
@@ -94,7 +100,7 @@ export const About: React.FC = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={`${founder.name} LinkedIn`}
-                      className="w-8 h-8 rounded-full bg-black/40 hover:bg-black/65 border border-black/20 flex items-center justify-center text-white transition-all duration-200 hover:scale-110 active:scale-95"
+                      className="w-8 h-8 rounded-full bg-black/50 hover:bg-black/75 border border-white/10 flex items-center justify-center text-white/90 hover:text-white transition-all duration-200 hover:scale-110 active:scale-95 shadow-sm"
                     >
                       <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
                         <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z" />
