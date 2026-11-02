@@ -6,7 +6,7 @@ export const aboutConfig = {
       'SAVEN Studios is an independent digital studio that turns ambitious ideas into modern, reliable, and user-focused software experiences.',
   },
   cta: {
-    heading: "Need an online presence?       Let's Talk!",
-    buttonText: 'Start a Project ↗',
+    heading: "Need an online presence?",
+    buttonText: "Let's Talk",
   },
 };
