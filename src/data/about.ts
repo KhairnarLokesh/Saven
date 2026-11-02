@@ -4,12 +4,12 @@ export interface ExactCapsuleFounder {
   id: string;
   name: string;
   role: string;
-  capsuleBg: string; // Pastel background hex/class matching template
+  capsuleBg: string;
   textColor: string;
   brandTag: string;
   brandColor: string;
   image: string;
-  offsetClass: string; // Staggered wave offset like template
+  offsetClass: string;
   socials: {
     github?: string;
     linkedin?: string;
@@ -21,12 +21,12 @@ export const exactFounders: ExactCapsuleFounder[] = [
     id: 'lokesh-khairnar',
     name: 'Lokesh Khairnar',
     role: 'Founder & Development Lead',
-    capsuleBg: 'bg-[#86b6cc]', // Soft Powder Blue from template
+    capsuleBg: 'bg-[#A9D4E5]',
     textColor: 'text-neutral-950',
     brandTag: 'SAVEN ARCHITECTURE',
     brandColor: 'text-[#0f3448]',
-    image: '/founders/lokesh-v2.png',
-    offsetClass: 'md:translate-y-0',
+    image: '/founders/lokesh.png',
+    offsetClass: 'md:-translate-y-5',
     socials: {
       github: 'https://github.com/KhairnarLokesh',
       linkedin: 'https://www.linkedin.com/in/lokesh-khairnar-b0a2832b3/',
@@ -36,12 +36,12 @@ export const exactFounders: ExactCapsuleFounder[] = [
     id: 'kanhaiya-bagul',
     name: 'Kanhaiya Bagul',
     role: 'Co-Founder & Engineering Lead',
-    capsuleBg: 'bg-[#9ac5a8]', // Soft Sage Green from template
+    capsuleBg: 'bg-[#A9CEB5]',
     textColor: 'text-neutral-950',
     brandTag: 'SAVEN ENGINEERING',
     brandColor: 'text-[#163f27]',
-    image: '/founders/kanhaiya-v2.png',
-    offsetClass: 'md:translate-y-12', // Staggered down like Rohit in template
+    image: '/founders/kanhaiya.png',
+    offsetClass: 'md:translate-y-5',
     socials: {
       github: 'https://github.com/KanhaiyaBagul',
       linkedin: 'https://www.linkedin.com/in/kanhaiyabagul/',
@@ -51,12 +51,12 @@ export const exactFounders: ExactCapsuleFounder[] = [
     id: 'sagar-datkhile',
     name: 'Sagar Datkhile',
     role: 'Co-Founder & Design Lead',
-    capsuleBg: 'bg-[#ded1b4]', // Soft Warm Sand from template
+    capsuleBg: 'bg-[#E8D9B8]',
     textColor: 'text-neutral-950',
     brandTag: 'SAVEN SYSTEMS',
     brandColor: 'text-[#483a1f]',
-    image: '/founders/plaid-v2.png',
-    offsetClass: 'md:translate-y-0',
+    image: '/founders/sagar.png',
+    offsetClass: 'md:-translate-y-5',
     socials: {
       github: 'https://github.com/Sagar-Datkhile',
       linkedin: 'https://www.linkedin.com/in/sagardatkhile/',
