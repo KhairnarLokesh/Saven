@@ -49,12 +49,12 @@ export const About: React.FC = () => {
           <h2 className="text-4xl sm:text-5xl md:text-6xl font-light tracking-tight text-[#F5F5F5] leading-[1.1]">
             Meet the{' '}
             <span className="font-semibold text-[#A8CBB3] underline decoration-[#A8CBB3]/35 underline-offset-8">
-              Minds
+              Founders
             </span>{' '}
-            Behind SAVEN.
+            Behind SAVEN Studios.
           </h2>
           <p className="text-base text-neutral-400 font-light mt-2">
-            Three builders.&nbsp; One shared ambition.
+            Three minds.&nbsp; One shared ambition.
           </p>
         </div>
 
