@@ -142,9 +142,9 @@ export const Contact: React.FC<ContactProps> = ({
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-stretch">
           {/* Main Form (8 cols) */}
-          <div className="lg:col-span-8 bg-neutral-950 p-8 sm:p-10 border border-neutral-800 shadow-2xl">
+          <div className="lg:col-span-8 bg-neutral-950 p-8 sm:p-10 border border-neutral-800 shadow-2xl flex flex-col">
             {status === 'success' ? (
               <div className="p-8 bg-neutral-900 border border-neutral-700 text-white space-y-5">
                 <div className="flex items-center space-x-3">
@@ -332,7 +332,7 @@ export const Contact: React.FC<ContactProps> = ({
           </div>
 
           {/* Direct Channels (4 cols) */}
-          <div className="lg:col-span-4 bg-neutral-950 border border-neutral-800 p-8 space-y-8">
+          <div className="lg:col-span-4 bg-neutral-950 border border-neutral-800 p-8 flex flex-col h-full">
             <div className="pb-4 border-b border-neutral-800">
               <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 block mb-1">
                 COMMUNICATION
@@ -340,7 +340,7 @@ export const Contact: React.FC<ContactProps> = ({
               <h3 className="text-xl font-light text-white">Direct Channels</h3>
             </div>
 
-            <div className="space-y-6 text-xs text-neutral-300">
+            <div className="space-y-6 text-xs text-neutral-300 mt-8">
               <div className="flex items-start space-x-3">
                 <Mail className="w-4 h-4 text-white mt-0.5 shrink-0" />
                 <div>
@@ -378,7 +378,7 @@ export const Contact: React.FC<ContactProps> = ({
               </div>
             </div>
 
-            <div className="pt-6 border-t border-neutral-900">
+            <div className="pt-6 border-t border-neutral-900 mt-auto">
               <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 block mb-2">
                 ACADEMIC INQUIRIES
               </span>
