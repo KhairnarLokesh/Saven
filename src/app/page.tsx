@@ -5,7 +5,6 @@ import { Navbar } from '@/components/Navbar';
 import { Hero } from '@/components/Hero';
 import { Services } from '@/components/Services';
 import { About } from '@/components/About';
-import { OnlinePresenceCTA } from '@/components/OnlinePresenceCTA';
 import { Contact } from '@/components/Contact';
 import { Footer } from '@/components/Footer';
 import { ShatterIntro } from '@/components/ShatterIntro';
@@ -53,7 +52,6 @@ export default function Home() {
 
 
       {/* About Section & Tech Matrix */}
-      <OnlinePresenceCTA />
       <About onStartProject={scrollToContact} />
 
       {/* Contact & Project Inquiry */}

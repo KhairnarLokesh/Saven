@@ -5,8 +5,12 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { aboutConfig } from '@/data/about';
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   Component Props
+   Component Props & Constants
 ───────────────────────────────────────────────────────────────────────────── */
+const WA_NUMBER = '918668404041';
+const WA_MESSAGE =
+  "Hello SAVEN Studios!\nI'm interested in your digital services and would like to discuss a project. Can we talk?";
+
 export interface AboutProps {
   onStartProject?: () => void;
 }
@@ -14,7 +18,7 @@ export interface AboutProps {
 /* ─────────────────────────────────────────────────────────────────────────────
    Main About Page Component (Continuous Monochrome Background & Balanced Spacing)
 ───────────────────────────────────────────────────────────────────────────── */
-export const About: React.FC<AboutProps> = ({ onStartProject }) => {
+export const About: React.FC<AboutProps> = () => {
   const shouldReduceMotion = useReducedMotion();
   const [mounted, setMounted] = useState(false);
 
@@ -25,18 +29,12 @@ export const About: React.FC<AboutProps> = ({ onStartProject }) => {
 
   const reducedMotion = mounted && Boolean(shouldReduceMotion);
 
-  const handleStartProjectClick = (
+  const handleLetsTalkWhatsApp = (
     e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>
   ) => {
     e.preventDefault();
-    if (onStartProject) {
-      onStartProject();
-    } else {
-      const el = document.getElementById('contact');
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
+    const whatsappUrl = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(WA_MESSAGE)}`;
+    window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -125,8 +123,10 @@ export const About: React.FC<AboutProps> = ({ onStartProject }) => {
           </h2>
 
           <a
-            href="#contact"
-            onClick={handleStartProjectClick}
+            href={`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(WA_MESSAGE)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={handleLetsTalkWhatsApp}
             className="
               inline-flex items-center justify-center
               px-[28px] py-[14px]
