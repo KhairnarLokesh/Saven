@@ -130,7 +130,7 @@ export const Contact: React.FC<ContactProps> = ({
   };
 
   return (
-    <section id="contact" className="py-28 bg-black text-white border-b border-neutral-900">
+    <section id="contact" className="pt-20 sm:pt-28 pb-12 sm:pb-16 bg-black text-white border-b border-neutral-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="max-w-3xl mb-16 pb-8 border-b border-neutral-900">

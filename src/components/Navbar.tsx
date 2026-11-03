@@ -78,7 +78,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onStartProject }) => {
                   key={item.name}
                   href={item.href}
                   onClick={(e) => handleNavClick(e, item.href)}
-                  className={`relative px-3.5 py-1.5 text-xs lg:text-sm tracking-wider uppercase transition-colors duration-200 ${
+                  className={`relative px-3.5 py-1.5 text-xs lg:text-sm tracking-wider transition-colors duration-200 ${
                     isActive
                       ? 'text-white font-medium'
                       : 'text-neutral-400 hover:text-white'
@@ -86,7 +86,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onStartProject }) => {
                 >
                   {item.name}
                   {isActive && (
-                    <span className="absolute bottom-0 left-3.5 right-3.5 h-[1.5px] bg-white transition-all duration-300" />
+                    <span className="absolute bottom-0 left-3.5 right-3.5 h-[2px] bg-white rounded-full transition-all duration-300" />
                   )}
                 </a>
               );
@@ -95,10 +95,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onStartProject }) => {
 
           {/* Action CTA & Mobile Toggle */}
           <div className="flex items-center space-x-3">
-            {/* Desktop & Tablet CTA button (hidden on compact mobile screens to prevent awkward text wrapping) */}
+            {/* Desktop & Tablet CTA button */}
             <button
               onClick={onStartProject}
-              className="hidden sm:inline-flex group relative items-center justify-center whitespace-nowrap px-4 py-2 text-xs uppercase tracking-wider font-semibold bg-white text-black border border-white hover:bg-black hover:text-white transition-all duration-200 cursor-pointer shadow-sm"
+              className="hidden sm:inline-flex group relative items-center justify-center whitespace-nowrap px-4 py-2 text-xs font-semibold bg-white text-black rounded-md hover:bg-neutral-200 transition-all duration-200 cursor-pointer shadow-sm"
             >
               <span>Start a Project</span>
               <ArrowUpRight className="w-3.5 h-3.5 ml-1 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -137,7 +137,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onStartProject }) => {
                   setMobileMenuOpen(false);
                   onStartProject();
                 }}
-                className="w-full py-3 text-center text-sm uppercase tracking-wider font-semibold bg-white text-black hover:bg-neutral-200 transition-colors"
+                className="w-full py-3 text-center text-sm uppercase tracking-wider font-semibold bg-white text-black rounded-md hover:bg-neutral-200 transition-colors"
               >
                 Start a Project
               </button>
