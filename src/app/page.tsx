@@ -49,8 +49,6 @@ export default function Home() {
       {/* Services Section */}
       <Services onSelectService={handleSelectService} />
 
-
-
       {/* About Section & Tech Matrix */}
       <About onStartProject={scrollToContact} />
 
