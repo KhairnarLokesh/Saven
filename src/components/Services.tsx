@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Plus,
@@ -112,40 +112,10 @@ const servicesList: ServiceItemConfig[] = [
 
 export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  const handleMouseEnter = (index: number) => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
-    setExpandedIndex(index);
-  };
-
-  const handleMouseLeave = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    timeoutRef.current = setTimeout(() => {
-      setExpandedIndex(null);
-    }, 250);
-  };
 
   const toggleExpand = (index: number) => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
     setExpandedIndex((prev) => (prev === index ? null : index));
   };
-
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
 
   const handleScrollToSection = (serviceTitle: string, targetId: string) => {
     onSelectService(serviceTitle);
@@ -170,17 +140,15 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
         {/* ============================================================== */}
         {/* CARDLESS VERTICAL SERIES (ONE AFTER ANOTHER IN A SINGLE LINE)   */}
         {/* ============================================================== */}
-        <div
-          onMouseLeave={handleMouseLeave}
-          className="border-t border-b border-neutral-900 divide-y divide-neutral-900"
-        >
+        <div className="border-t border-b border-neutral-900 divide-y divide-neutral-900">
           {servicesList.map((item, index) => {
             const isExpanded = expandedIndex === index;
 
             return (
               <div
                 key={item.number}
-                onMouseEnter={() => handleMouseEnter(index)}
+                {...(index === 0 ? { onMouseEnter: () => setExpandedIndex(0) } : {})}
+
                 className={`transition-colors duration-200 ${
                   isExpanded ? 'bg-neutral-950/80' : 'hover:bg-neutral-950/40'
                 }`}

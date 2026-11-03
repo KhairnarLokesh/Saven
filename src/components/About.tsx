@@ -43,6 +43,7 @@ export const About: React.FC<AboutProps> = () => {
       className="relative bg-black text-white border-b border-neutral-900 overflow-hidden selection:bg-white selection:text-black"
       style={{
         fontFamily: 'var(--font-inter), "Inter", sans-serif',
+        scrollMarginTop: '80px',
       }}
     >
       {/* ═══════════════════════════════════════════════════════════════════════
