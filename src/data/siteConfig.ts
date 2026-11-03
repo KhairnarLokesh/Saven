@@ -7,16 +7,16 @@ export const siteConfig = {
   heroDescription:
     'We design and develop modern websites, custom software, and digital products that help businesses turn ideas into real-world solutions.',
   contact: {
-    email: 'support.saven@gmail.com',
-    inquiriesEmail: 'support.saven@gmail.com',
-    phone: '+1 (800) 555-0199',
-    whatsapp: 'https://wa.me/18005550199',
+    email: 'saven.studios@outlook.com',
+    inquiriesEmail: 'saven.studios@outlook.com',
+    phone: '+91 8668404041',
+    whatsapp: 'https://wa.me/8668404041',
     location: 'Remote-First · Global Client Base',
     hours: 'Mon – Fri: 09:00 – 18:00 UTC',
     responseTarget: 'Within 24 business hours',
   },
   social: {
-    github: 'https://github.com/saven-agency',
+    github: 'https://github.com/SAVEN-Studios',
     linkedin: 'https://www.linkedin.com/company/saven.studios/',
     instagram: 'https://www.instagram.com/saven.studios/',
   },
