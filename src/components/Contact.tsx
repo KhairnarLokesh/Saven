@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import { siteConfig } from '@/data/siteConfig';
@@ -6,7 +6,6 @@ import {
   Mail,
   Clock,
   MapPin,
-  CheckCircle2,
   AlertCircle,
   Loader2,
   ArrowUpRight,
@@ -137,20 +136,39 @@ export const Contact: React.FC<ContactProps> = ({
           {/* Main Form (8 cols) */}
           <div className="lg:col-span-8 bg-neutral-950 p-6 sm:p-10 border border-neutral-800 shadow-2xl flex flex-col">
             {status === 'success' ? (
-              <div className="p-8 sm:p-10 bg-neutral-900 border border-neutral-700 text-white space-y-6">
-                <div className="flex items-center space-x-3">
-                  <CheckCircle2 className="w-6 h-6 text-white" />
-                  <h3 className="text-xl font-medium">Inquiry Submitted Successfully</h3>
-                </div>
-                <p className="text-sm text-neutral-300 leading-relaxed font-light">
-                  Thank you! Your project inquiry has been received. Our team will contact you soon.
-                </p>
+              <div className="flex-1 flex items-center justify-center py-16 sm:py-20 text-center min-h-[480px]">
+                <div className="flex flex-col items-center gap-4 max-w-sm w-full mx-auto">
+                  <svg
+                    width="48"
+                    height="48"
+                    viewBox="0 0 48 48"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                    className="shrink-0"
+                  >
+                    <circle cx="24" cy="24" r="22" stroke="#9BCB9B" strokeWidth="1.5" />
+                    <path
+                      d="M15 24.5L21 30.5L33 18"
+                      stroke="#9BCB9B"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
 
-                <div className="pt-2">
+                  <h3 className="text-2xl sm:text-3xl font-light tracking-tight text-white">
+                    Inquiry received.
+                  </h3>
+
+                  <p className="text-sm text-[#A0A0A0] leading-relaxed font-light max-w-xs">
+                    Thank you for reaching out to SAVEN Studios. Our team will review your details and contact you shortly.
+                  </p>
+
                   <button
                     type="button"
                     onClick={() => setStatus('idle')}
-                    className="px-5 py-2.5 bg-white text-black text-xs uppercase font-mono tracking-wider font-semibold hover:bg-neutral-200 transition-colors cursor-pointer"
+                    className="mt-3 w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 bg-white text-black text-xs uppercase font-mono tracking-wider font-semibold hover:bg-neutral-200 transition-colors duration-200 cursor-pointer"
                   >
                     Submit Another Inquiry
                   </button>
