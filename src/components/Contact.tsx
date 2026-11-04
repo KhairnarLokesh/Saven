@@ -12,6 +12,7 @@ import {
   Copy,
   Check,
   Send,
+  ArrowUpRight,
 } from 'lucide-react';
 
 interface ContactProps {
@@ -312,17 +313,17 @@ export const Contact: React.FC<ContactProps> = ({
                   <button
                     type="submit"
                     disabled={status === 'loading'}
-                    className="inline-flex items-center justify-center px-6 py-3 bg-white text-black text-xs uppercase tracking-widest font-semibold border border-white hover:bg-black hover:text-white transition-all cursor-pointer disabled:opacity-50"
+                    className="inline-flex items-center justify-center px-6 py-3.5 bg-white text-black font-semibold text-xs sm:text-sm tracking-wide rounded-md hover:bg-neutral-200 active:scale-[0.98] transition-all duration-200 cursor-pointer shadow-lg hover:shadow-white/10 disabled:opacity-50 disabled:pointer-events-none group"
                   >
                     {status === 'loading' ? (
                       <>
-                        <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" />
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                         <span>Transmitting...</span>
                       </>
                     ) : (
                       <>
-                        <Send className="w-3.5 h-3.5 mr-2" />
                         <span>Send Project Inquiry</span>
+                        <ArrowUpRight className="w-4 h-4 ml-1.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                       </>
                     )}
                   </button>
