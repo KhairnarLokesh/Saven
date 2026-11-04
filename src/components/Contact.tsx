@@ -31,6 +31,7 @@ export const Contact: React.FC<ContactProps> = ({
     company: '',
     service: initialService || 'Custom Software Development',
     description: initialDescription || '',
+    website: '', // honeypot
   });
 
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
@@ -88,7 +89,7 @@ export const Contact: React.FC<ContactProps> = ({
     setErrorMessage('');
 
     try {
-      const response = await fetch('/api/contact', {
+      const response = await fetch('/api/project-inquiry', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -106,6 +107,7 @@ export const Contact: React.FC<ContactProps> = ({
           company: '',
           service: 'Custom Software Development',
           description: '',
+          website: '',
         });
       } else {
         setStatus('error');
@@ -114,12 +116,12 @@ export const Contact: React.FC<ContactProps> = ({
           (firstFieldError as string) ||
           data.message ||
           data.error ||
-          'Failed to submit inquiry. Please reach out via email directly.'
+          'Unable to send your inquiry. Please try again.'
         );
       }
     } catch {
       setStatus('error');
-      setErrorMessage('Network connection error. Please try again or email us directly.');
+      setErrorMessage('Unable to send your inquiry. Please try again.');
     }
   };
 
@@ -153,7 +155,7 @@ export const Contact: React.FC<ContactProps> = ({
                   <h3 className="text-xl font-medium">Inquiry Submitted Successfully</h3>
                 </div>
                 <p className="text-sm text-neutral-300 leading-relaxed font-light">
-                  Thank you for submitting your project specifications. Our engineering lead will review your requirements and respond within 24 business hours.
+                  Thank you! Your project inquiry has been received. Our team will contact you soon.
                 </p>
 
                 <div className="p-4 bg-black border border-neutral-800 flex items-center justify-between">
@@ -304,6 +306,18 @@ export const Contact: React.FC<ContactProps> = ({
                   )}
                 </div>
 
+                {/* Honeypot — hidden from real users, bots fill it */}
+                <input
+                  type="text"
+                  name="website"
+                  value={formData.website}
+                  onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                  style={{ position: 'absolute', left: '-9999px', opacity: 0, height: 0, width: 0 }}
+                />
+
                 {/* Submit Row */}
                 <div className="pt-4 border-t border-neutral-900 flex items-center justify-between">
                   <div className="text-[11px] font-mono text-neutral-500">
@@ -318,7 +332,7 @@ export const Contact: React.FC<ContactProps> = ({
                     {status === 'loading' ? (
                       <>
                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        <span>Transmitting...</span>
+                        <span>SENDING INQUIRY...</span>
                       </>
                     ) : (
                       <>
