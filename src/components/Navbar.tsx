@@ -62,7 +62,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onStartProject }) => {
           <a
             href="#home"
             onClick={(e) => handleNavClick(e, '#home')}
-            className="flex items-center group focus:outline-none focus:ring-1 focus:ring-white rounded p-1"
+            className="flex items-center group outline-none focus:outline-none focus:ring-0"
             aria-label="SAVEN Agency Home"
           >
             <Logo size="md" variant="white" />
