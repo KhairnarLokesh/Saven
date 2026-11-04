@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { ArrowUpRight } from 'lucide-react';
 
 interface HeroProps {
@@ -14,32 +15,36 @@ export const Hero: React.FC<HeroProps> = ({ onStartProject, onExploreServices })
       id="home"
       className="relative min-h-[100dvh] sm:min-h-screen flex items-center pt-28 pb-16 sm:pt-36 sm:pb-24 md:pt-44 md:pb-28 overflow-hidden bg-[#090a0e] text-white border-b border-neutral-900"
     >
-      {/* Background Cinematic Desk Scene (Laptop, lamp, desk, window shadows) */}
+      {/* Background Cinematic Desk Scene (SAVEN laptop, desk lamp, books, cascading plant) */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden select-none bg-[#090a0e]">
-        {/* Desk scene image on the right with CSS mask completely eliminating the left 50% */}
-        <div
-          className="absolute inset-0 bg-cover bg-right md:bg-right-center bg-no-repeat opacity-85 md:opacity-95"
-          style={{
-            backgroundImage: `url('/api/hero-image')`,
-            maskImage:
-              'linear-gradient(to right, transparent 0%, transparent 50%, rgba(0,0,0,0.5) 56%, black 66%, black 100%)',
-            WebkitMaskImage:
-              'linear-gradient(to right, transparent 0%, transparent 50%, rgba(0,0,0,0.5) 56%, black 66%, black 100%)',
-          }}
-        />
+        {/* Next.js optimized high-fidelity responsive hero background */}
+        <div className="relative w-full h-full">
+          <Image
+            src="/hero-bg-2x.jpg"
+            alt="SAVEN Creative Workspace"
+            fill
+            priority
+            quality={95}
+            sizes="100vw"
+            className="object-cover object-[75%_center] md:object-right opacity-85 md:opacity-95 transition-opacity duration-700"
+          />
+        </div>
 
-        {/* 100% Solid studio black backing covering the left half to permanently eliminate any ghost text */}
+        {/* Mobile Scrim: Top-to-bottom dark gradient ensuring text is 100% legible while the warm desk scene shines through below */}
+        <div className="absolute inset-0 md:hidden bg-gradient-to-b from-[#090a0e]/95 via-[#090a0e]/75 to-[#090a0e]/40 pointer-events-none" />
+
+        {/* Desktop Scrim: Left-to-right fade so typography sits on pure dark studio backing and seamlessly blends into the desk scene */}
         <div
-          className="absolute inset-0 pointer-events-none"
+          className="hidden md:block absolute inset-0 pointer-events-none"
           style={{
             background:
-              'linear-gradient(to right, #090a0e 0%, #090a0e 48%, rgba(9, 10, 14, 0.95) 53%, rgba(9, 10, 14, 0.65) 60%, transparent 72%)',
+              'linear-gradient(to right, #090a0e 0%, #090a0e 38%, rgba(9, 10, 14, 0.88) 48%, rgba(9, 10, 14, 0.45) 58%, transparent 72%)',
           }}
         />
 
-        {/* Vertical ambient fades for seamless navbar and section transitions */}
-        <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/90 via-black/40 to-transparent pointer-events-none" />
-        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black via-black/80 to-transparent pointer-events-none" />
+        {/* Seamless edge fades for top navbar and bottom section transitions */}
+        <div className="absolute inset-x-0 top-0 h-24 sm:h-32 bg-gradient-to-b from-[#090a0e] via-[#090a0e]/60 to-transparent pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-24 sm:h-32 bg-gradient-to-t from-[#090a0e] via-[#090a0e]/80 to-transparent pointer-events-none" />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">

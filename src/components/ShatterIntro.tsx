@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import { ShatterType, ShatterTypeHandle } from './ShatterType';
+import { SavenBrandWordmark } from './SavenBrandWordmark';
 
 interface ShatterIntroProps {
   onComplete: () => void;
@@ -213,13 +214,8 @@ export const ShatterIntro: React.FC<ShatterIntroProps> = ({
         >
           {/* Logo Container - spans full prominent width across screen */}
           <div className="relative inline-block max-w-[1500px] w-[92vw] sm:w-[90vw] md:w-[88vw] lg:w-[86vw]">
-            {/* Exact Brand Wordmark: SAVEN with dots Ś À V̇ Ė Ṅ */}
-            <Image
-              src="/saven-logo-transparent.png"
-              alt="SAVEN"
-              width={1500}
-              height={249}
-              priority
+            {/* Exact Brand Wordmark: SAVEN with dots Ś À V̇ Ė Ṅ - Architectural precision vector */}
+            <SavenBrandWordmark
               className="w-full h-auto object-contain select-none transition-transform duration-700 ease-out"
             />
 
@@ -228,8 +224,8 @@ export const ShatterIntro: React.FC<ShatterIntroProps> = ({
               <div
                 className="absolute pointer-events-none z-30"
                 style={{
-                  top: '12%',
-                  right: '6.8%',
+                  top: '9.6%',
+                  right: '6.9%',
                   transform: 'translate(50%, -50%)',
                 }}
               >

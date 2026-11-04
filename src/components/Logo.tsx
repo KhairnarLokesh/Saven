@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
+import { SavenBrandWordmark } from './SavenBrandWordmark';
 
 interface LogoProps {
   className?: string;
@@ -31,14 +31,10 @@ export const Logo: React.FC<LogoProps> = ({
       aria-label="SAVEN Digital Solutions"
     >
       <div className="relative flex items-center">
-        {/* Exact SAVEN Brand Wordmark Asset */}
-        <Image
-          src="/saven-logo-transparent.png"
-          alt="SAVEN"
-          width={sizeMap.width}
-          height={sizeMap.height}
-          priority
-          className={`object-contain transition-all duration-300 group-hover:brightness-110 ${sizeMap.className} ${invertFilter}`}
+        {/* Exact SAVEN Brand Wordmark Asset - Architectural Vector */}
+        <SavenBrandWordmark
+          fill={variant === 'black' ? '#000000' : '#FFFFFF'}
+          className={`object-contain transition-all duration-300 group-hover:brightness-110 ${sizeMap.className}`}
         />
       </div>
     </div>
