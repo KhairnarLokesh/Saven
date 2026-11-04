@@ -174,8 +174,7 @@ export const Contact: React.FC<ContactProps> = ({
               {/* ── Success Panel ── */}
               <div
                 aria-hidden={!showSuccess}
-                // @ts-expect-error inert is a valid HTML attribute not yet in React types
-                inert={!showSuccess ? '' : undefined}
+                inert={!showSuccess}
                 className="absolute inset-0 flex items-center justify-center text-center min-h-[480px]"
                 style={{
                   opacity: showSuccess ? 1 : 0,
@@ -234,8 +233,7 @@ export const Contact: React.FC<ContactProps> = ({
               {/* ── Form Panel ── */}
               <div
                 aria-hidden={showSuccess}
-                // @ts-expect-error inert is a valid HTML attribute not yet in React types
-                inert={showSuccess ? '' : undefined}
+                inert={showSuccess}
                 style={{
                   opacity: showSuccess ? 0 : 1,
                   transition: prefersReducedMotion
