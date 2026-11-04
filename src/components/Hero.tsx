@@ -20,7 +20,7 @@ export const Hero: React.FC<HeroProps> = ({ onStartProject, onExploreServices })
         {/* Next.js optimized high-fidelity responsive hero background */}
         <div className="relative w-full h-full">
           <Image
-            src="/hero-bg-2x.jpg"
+            src="/hero-bg-4k.png"
             alt="SAVEN Creative Workspace"
             fill
             priority
