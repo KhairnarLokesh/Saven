@@ -1,6 +1,6 @@
-﻿'use client';
+'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { siteConfig } from '@/data/siteConfig';
 import {
   Mail,
@@ -34,6 +34,14 @@ export const Contact: React.FC<ContactProps> = ({
   const [errorMessage, setErrorMessage] = useState('');
 
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+  // Crossfade animation state
+  const [showSuccess, setShowSuccess] = useState(false);
+  const successHeadingRef = useRef<HTMLHeadingElement>(null);
+  const prefersReducedMotion =
+    typeof window !== 'undefined'
+      ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      : false;
 
   React.useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -119,6 +127,21 @@ export const Contact: React.FC<ContactProps> = ({
     }
   };
 
+  // Sync crossfade state with form status
+  useEffect(() => {
+    if (status === 'success') {
+      // Small rAF delay so React flushes the DOM before we start the fade-in
+      const id = requestAnimationFrame(() => {
+        setShowSuccess(true);
+        // Move focus to success heading for keyboard/AT users
+        successHeadingRef.current?.focus();
+      });
+      return () => cancelAnimationFrame(id);
+    } else {
+      setShowSuccess(false);
+    }
+  }, [status]);
+
   return (
     <section id="contact" className="pt-20 sm:pt-28 pb-12 sm:pb-16 bg-black text-white border-b border-neutral-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -135,9 +158,38 @@ export const Contact: React.FC<ContactProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-stretch">
           {/* Main Form (8 cols) */}
           <div className="lg:col-span-8 bg-neutral-950 p-6 sm:p-10 border border-neutral-800 shadow-2xl flex flex-col">
-            {status === 'success' ? (
-              <div className="flex-1 flex items-center justify-center py-16 sm:py-20 text-center min-h-[480px]">
-                <div className="flex flex-col items-center gap-4 max-w-sm w-full mx-auto">
+            {/* Live region — announces success to screen readers */}
+            <div
+              role="status"
+              aria-live="polite"
+              aria-atomic="true"
+              className="sr-only"
+            >
+              {status === 'success' ? 'Inquiry received. Thank you for reaching out to SAVEN Studios.' : ''}
+            </div>
+
+            {/* Crossfade wrapper — both panels are always mounted, opacity-animated */}
+            <div className="relative flex-1 flex flex-col">
+
+              {/* ── Success Panel ── */}
+              <div
+                aria-hidden={!showSuccess}
+                // @ts-expect-error inert is a valid HTML attribute not yet in React types
+                inert={!showSuccess ? '' : undefined}
+                className="absolute inset-0 flex items-center justify-center text-center min-h-[480px]"
+                style={{
+                  opacity: showSuccess ? 1 : 0,
+                  transition: prefersReducedMotion
+                    ? 'none'
+                    : showSuccess
+                    ? 'opacity 250ms ease-in-out, transform 250ms ease-in-out'
+                    : 'opacity 180ms ease-out',
+                  transform: showSuccess ? 'translateY(0)' : 'translateY(4px)',
+                  pointerEvents: showSuccess ? 'auto' : 'none',
+                  zIndex: showSuccess ? 1 : 0,
+                }}
+              >
+                <div className="flex flex-col items-center gap-4 max-w-sm w-full mx-auto px-4 sm:px-0">
                   <svg
                     width="48"
                     height="48"
@@ -157,7 +209,11 @@ export const Contact: React.FC<ContactProps> = ({
                     />
                   </svg>
 
-                  <h3 className="text-2xl sm:text-3xl font-light tracking-tight text-white">
+                  <h3
+                    ref={successHeadingRef}
+                    tabIndex={-1}
+                    className="text-2xl sm:text-3xl font-light tracking-tight text-white outline-none"
+                  >
                     Inquiry received.
                   </h3>
 
@@ -174,7 +230,23 @@ export const Contact: React.FC<ContactProps> = ({
                   </button>
                 </div>
               </div>
-            ) : (
+
+              {/* ── Form Panel ── */}
+              <div
+                aria-hidden={showSuccess}
+                // @ts-expect-error inert is a valid HTML attribute not yet in React types
+                inert={showSuccess ? '' : undefined}
+                style={{
+                  opacity: showSuccess ? 0 : 1,
+                  transition: prefersReducedMotion
+                    ? 'none'
+                    : showSuccess
+                    ? 'opacity 180ms ease-out'
+                    : 'opacity 250ms ease-in-out',
+                  pointerEvents: showSuccess ? 'none' : 'auto',
+                  visibility: showSuccess ? 'hidden' : 'visible',
+                }}
+              >
               <form onSubmit={handleSubmit} className="space-y-6">
                 {status === 'error' && (
                   <div className="p-4 bg-neutral-900 border border-red-500/50 text-red-200 flex items-center space-x-3 text-xs">
@@ -334,7 +406,8 @@ export const Contact: React.FC<ContactProps> = ({
                   </button>
                 </div>
               </form>
-            )}
+              </div>
+            </div>
           </div>
 
           {/* Direct Channels (4 cols) */}
