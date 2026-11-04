@@ -456,3 +456,4 @@ export function renderProjectInquiryText(data: ProjectInquiryData): string {
     '© 2026 SAVEN Studios. All rights reserved.',
   ].join('\n');
 }
+
