@@ -9,9 +9,6 @@ import {
   CheckCircle2,
   AlertCircle,
   Loader2,
-  Copy,
-  Check,
-  Send,
   ArrowUpRight,
 } from 'lucide-react';
 
@@ -36,8 +33,7 @@ export const Contact: React.FC<ContactProps> = ({
 
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
-  const [referenceId, setReferenceId] = useState('');
-  const [copiedRef, setCopiedRef] = useState(false);
+
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   React.useEffect(() => {
@@ -99,7 +95,6 @@ export const Contact: React.FC<ContactProps> = ({
 
       if (response.ok && data.success) {
         setStatus('success');
-        setReferenceId(data.referenceId || `SVN-${Math.floor(100000 + Math.random() * 900000)}`);
         setFormData({
           fullName: '',
           email: '',
@@ -125,13 +120,6 @@ export const Contact: React.FC<ContactProps> = ({
     }
   };
 
-  const copyRefToClipboard = () => {
-    if (!referenceId) return;
-    navigator.clipboard.writeText(referenceId);
-    setCopiedRef(true);
-    setTimeout(() => setCopiedRef(false), 2000);
-  };
-
   return (
     <section id="contact" className="pt-20 sm:pt-28 pb-12 sm:pb-16 bg-black text-white border-b border-neutral-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -147,9 +135,9 @@ export const Contact: React.FC<ContactProps> = ({
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-stretch">
           {/* Main Form (8 cols) */}
-          <div className="lg:col-span-8 bg-neutral-950 p-8 sm:p-10 border border-neutral-800 shadow-2xl flex flex-col">
+          <div className="lg:col-span-8 bg-neutral-950 p-6 sm:p-10 border border-neutral-800 shadow-2xl flex flex-col">
             {status === 'success' ? (
-              <div className="p-8 bg-neutral-900 border border-neutral-700 text-white space-y-5">
+              <div className="p-8 sm:p-10 bg-neutral-900 border border-neutral-700 text-white space-y-6">
                 <div className="flex items-center space-x-3">
                   <CheckCircle2 className="w-6 h-6 text-white" />
                   <h3 className="text-xl font-medium">Inquiry Submitted Successfully</h3>
@@ -158,30 +146,15 @@ export const Contact: React.FC<ContactProps> = ({
                   Thank you! Your project inquiry has been received. Our team will contact you soon.
                 </p>
 
-                <div className="p-4 bg-black border border-neutral-800 flex items-center justify-between">
-                  <div>
-                    <span className="text-[10px] font-mono uppercase text-neutral-500 block">
-                      Inquiry Tracking ID
-                    </span>
-                    <span className="text-base font-mono text-white font-semibold">{referenceId}</span>
-                  </div>
+                <div className="pt-2">
                   <button
                     type="button"
-                    onClick={copyRefToClipboard}
-                    className="px-3 py-1.5 text-xs font-mono border border-neutral-700 hover:border-white transition-colors cursor-pointer flex items-center space-x-1"
+                    onClick={() => setStatus('idle')}
+                    className="px-5 py-2.5 bg-white text-black text-xs uppercase font-mono tracking-wider font-semibold hover:bg-neutral-200 transition-colors cursor-pointer"
                   >
-                    {copiedRef ? <Check className="w-3.5 h-3.5 text-white" /> : <Copy className="w-3.5 h-3.5" />}
-                    <span>{copiedRef ? 'Copied' : 'Copy'}</span>
+                    Submit Another Inquiry
                   </button>
                 </div>
-
-                <button
-                  type="button"
-                  onClick={() => setStatus('idle')}
-                  className="px-5 py-2.5 bg-white text-black text-xs uppercase font-mono tracking-wider font-semibold hover:bg-neutral-200 transition-colors cursor-pointer"
-                >
-                  Submit Another Inquiry
-                </button>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
@@ -319,25 +292,25 @@ export const Contact: React.FC<ContactProps> = ({
                 />
 
                 {/* Submit Row */}
-                <div className="pt-4 border-t border-neutral-900 flex items-center justify-between">
-                  <div className="text-[11px] font-mono text-neutral-500">
+                <div className="pt-4 border-t border-neutral-900 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="text-[11px] font-mono text-neutral-500 text-center w-full sm:w-auto leading-relaxed">
                     Non-disclosure and data privacy guaranteed.
                   </div>
 
                   <button
                     type="submit"
                     disabled={status === 'loading'}
-                    className="inline-flex items-center justify-center px-6 py-3.5 bg-white text-black font-semibold text-xs sm:text-sm tracking-wide rounded-md hover:bg-neutral-200 active:scale-[0.98] transition-all duration-200 cursor-pointer shadow-lg hover:shadow-white/10 disabled:opacity-50 disabled:pointer-events-none group"
+                    className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3.5 bg-white text-black font-semibold text-xs sm:text-sm tracking-wide rounded-md hover:bg-neutral-200 active:scale-[0.98] transition-all duration-200 cursor-pointer shadow-lg hover:shadow-white/10 disabled:opacity-50 disabled:pointer-events-none group shrink-0"
                   >
                     {status === 'loading' ? (
                       <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin shrink-0" />
                         <span>SENDING INQUIRY...</span>
                       </>
                     ) : (
                       <>
-                        <span>Send Project Inquiry</span>
-                        <ArrowUpRight className="w-4 h-4 ml-1.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                        <span className="whitespace-nowrap">Send Project Inquiry</span>
+                        <ArrowUpRight className="w-4 h-4 ml-1.5 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                       </>
                     )}
                   </button>

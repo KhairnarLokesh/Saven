@@ -12,7 +12,7 @@ const spaceGrotesk = Space_Grotesk({
 
 export const metadata: Metadata = {
   title: {
-    default: 'SAVEN · Software Development & Digital Solutions Agency',
+    default: 'SAVEN Studios - Software Solutions Agency',
     template: '%s | SAVEN',
   },
   description:
