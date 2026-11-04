@@ -135,7 +135,7 @@ export const Contact: React.FC<ContactProps> = ({
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-stretch">
           {/* Main Form (8 cols) */}
-          <div className="lg:col-span-8 bg-neutral-950 p-8 sm:p-10 border border-neutral-800 shadow-2xl flex flex-col">
+          <div className="lg:col-span-8 bg-neutral-950 p-6 sm:p-10 border border-neutral-800 shadow-2xl flex flex-col">
             {status === 'success' ? (
               <div className="p-8 sm:p-10 bg-neutral-900 border border-neutral-700 text-white space-y-6">
                 <div className="flex items-center space-x-3">
@@ -292,25 +292,25 @@ export const Contact: React.FC<ContactProps> = ({
                 />
 
                 {/* Submit Row */}
-                <div className="pt-4 border-t border-neutral-900 flex items-center justify-between">
-                  <div className="text-[11px] font-mono text-neutral-500">
+                <div className="pt-4 border-t border-neutral-900 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="text-[11px] font-mono text-neutral-500 text-center w-full sm:w-auto leading-relaxed">
                     Non-disclosure and data privacy guaranteed.
                   </div>
 
                   <button
                     type="submit"
                     disabled={status === 'loading'}
-                    className="inline-flex items-center justify-center px-6 py-3.5 bg-white text-black font-semibold text-xs sm:text-sm tracking-wide rounded-md hover:bg-neutral-200 active:scale-[0.98] transition-all duration-200 cursor-pointer shadow-lg hover:shadow-white/10 disabled:opacity-50 disabled:pointer-events-none group"
+                    className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3.5 bg-white text-black font-semibold text-xs sm:text-sm tracking-wide rounded-md hover:bg-neutral-200 active:scale-[0.98] transition-all duration-200 cursor-pointer shadow-lg hover:shadow-white/10 disabled:opacity-50 disabled:pointer-events-none group shrink-0"
                   >
                     {status === 'loading' ? (
                       <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin shrink-0" />
                         <span>SENDING INQUIRY...</span>
                       </>
                     ) : (
                       <>
-                        <span>Send Project Inquiry</span>
-                        <ArrowUpRight className="w-4 h-4 ml-1.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                        <span className="whitespace-nowrap">Send Project Inquiry</span>
+                        <ArrowUpRight className="w-4 h-4 ml-1.5 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                       </>
                     )}
                   </button>
