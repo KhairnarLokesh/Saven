@@ -9,9 +9,6 @@ import {
   CheckCircle2,
   AlertCircle,
   Loader2,
-  Copy,
-  Check,
-  Send,
   ArrowUpRight,
 } from 'lucide-react';
 
@@ -36,8 +33,7 @@ export const Contact: React.FC<ContactProps> = ({
 
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
-  const [referenceId, setReferenceId] = useState('');
-  const [copiedRef, setCopiedRef] = useState(false);
+
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   React.useEffect(() => {
@@ -99,7 +95,6 @@ export const Contact: React.FC<ContactProps> = ({
 
       if (response.ok && data.success) {
         setStatus('success');
-        setReferenceId(data.referenceId || `SVN-${Math.floor(100000 + Math.random() * 900000)}`);
         setFormData({
           fullName: '',
           email: '',
@@ -125,13 +120,6 @@ export const Contact: React.FC<ContactProps> = ({
     }
   };
 
-  const copyRefToClipboard = () => {
-    if (!referenceId) return;
-    navigator.clipboard.writeText(referenceId);
-    setCopiedRef(true);
-    setTimeout(() => setCopiedRef(false), 2000);
-  };
-
   return (
     <section id="contact" className="pt-20 sm:pt-28 pb-12 sm:pb-16 bg-black text-white border-b border-neutral-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -149,7 +137,7 @@ export const Contact: React.FC<ContactProps> = ({
           {/* Main Form (8 cols) */}
           <div className="lg:col-span-8 bg-neutral-950 p-8 sm:p-10 border border-neutral-800 shadow-2xl flex flex-col">
             {status === 'success' ? (
-              <div className="p-8 bg-neutral-900 border border-neutral-700 text-white space-y-5">
+              <div className="p-8 sm:p-10 bg-neutral-900 border border-neutral-700 text-white space-y-6">
                 <div className="flex items-center space-x-3">
                   <CheckCircle2 className="w-6 h-6 text-white" />
                   <h3 className="text-xl font-medium">Inquiry Submitted Successfully</h3>
@@ -158,30 +146,15 @@ export const Contact: React.FC<ContactProps> = ({
                   Thank you! Your project inquiry has been received. Our team will contact you soon.
                 </p>
 
-                <div className="p-4 bg-black border border-neutral-800 flex items-center justify-between">
-                  <div>
-                    <span className="text-[10px] font-mono uppercase text-neutral-500 block">
-                      Inquiry Tracking ID
-                    </span>
-                    <span className="text-base font-mono text-white font-semibold">{referenceId}</span>
-                  </div>
+                <div className="pt-2">
                   <button
                     type="button"
-                    onClick={copyRefToClipboard}
-                    className="px-3 py-1.5 text-xs font-mono border border-neutral-700 hover:border-white transition-colors cursor-pointer flex items-center space-x-1"
+                    onClick={() => setStatus('idle')}
+                    className="px-5 py-2.5 bg-white text-black text-xs uppercase font-mono tracking-wider font-semibold hover:bg-neutral-200 transition-colors cursor-pointer"
                   >
-                    {copiedRef ? <Check className="w-3.5 h-3.5 text-white" /> : <Copy className="w-3.5 h-3.5" />}
-                    <span>{copiedRef ? 'Copied' : 'Copy'}</span>
+                    Submit Another Inquiry
                   </button>
                 </div>
-
-                <button
-                  type="button"
-                  onClick={() => setStatus('idle')}
-                  className="px-5 py-2.5 bg-white text-black text-xs uppercase font-mono tracking-wider font-semibold hover:bg-neutral-200 transition-colors cursor-pointer"
-                >
-                  Submit Another Inquiry
-                </button>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
