@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import {
+  renderProjectInquiryHtml,
+  renderProjectInquiryText,
+  type ProjectInquiryData,
+} from '@/lib/email-template';
 
 const ALLOWED_SERVICES = [
   'Custom Software Development',
@@ -29,7 +34,6 @@ function checkRateLimit(ip: string): boolean {
   const now = Date.now();
   const record = rateLimitMap.get(ip);
 
-  // Periodically clean stale records
   if (rateLimitMap.size > 1000) {
     for (const [key, val] of rateLimitMap.entries()) {
       if (now - val.lastReset > RATE_LIMIT_WINDOW) {
@@ -73,7 +77,6 @@ export async function POST(request: NextRequest) {
 
     // ── Honeypot Bot Detection ────────────────────────────────────────────────
     if (website && typeof website === 'string' && website.trim().length > 0) {
-      // Silently accept without sending email
       return NextResponse.json(
         {
           success: true,
@@ -125,9 +128,8 @@ export async function POST(request: NextRequest) {
     // ── Sanitize Data ─────────────────────────────────────────────────────────
     const randomHex = Math.random().toString(36).substring(2, 8).toUpperCase();
     const referenceId = `SVN-${new Date().getFullYear()}-${randomHex}`;
-    const timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
 
-    const sanitized = {
+    const sanitized: ProjectInquiryData = {
       fullName: fullName.trim(),
       email: email.trim().toLowerCase(),
       phone: phone && typeof phone === 'string' && phone.trim() ? phone.trim() : 'Not provided',
@@ -138,36 +140,12 @@ export async function POST(request: NextRequest) {
 
     // ── Resend Email Dispatch ─────────────────────────────────────────────────
     const resendApiKey = process.env.RESEND_API_KEY;
-    const fromEmail = process.env.RESEND_FROM_EMAIL || 'SAVEN Studios <inquiries@your-verified-domain.com>';
+    const fromEmail = process.env.RESEND_FROM_EMAIL || 'SAVEN Studios <inquiries@savenstudios.in>';
     const toEmail = process.env.CONTACT_EMAIL || 'saven.studios@outlook.com';
-
-    const emailText = [
-      'SAVEN STUDIOS — NEW PROJECT INQUIRY',
-      `Reference ID : ${referenceId}`,
-      `Received At  : ${timestamp} IST`,
-      '',
-      '==================================================',
-      'CLIENT INFORMATION',
-      '==================================================',
-      `Full Name    : ${sanitized.fullName}`,
-      `Email        : ${sanitized.email}`,
-      `Phone        : ${sanitized.phone}`,
-      `Company      : ${sanitized.company}`,
-      '',
-      '==================================================',
-      'PROJECT SPECIFICATIONS',
-      '==================================================',
-      `Service      : ${sanitized.service}`,
-      '',
-      'Description  :',
-      sanitized.description,
-      '',
-      '==================================================',
-      `Reply directly to this email to reach ${sanitized.fullName} at ${sanitized.email}.`,
-    ].join('\n');
+    const templateId = process.env.RESEND_TEMPLATE_ID?.trim();
+    const subject = `New Project Inquiry | ${sanitized.fullName}`;
 
     if (!resendApiKey || resendApiKey.startsWith('re_your_')) {
-      // Local dev simulation when no production key is configured yet
       if (process.env.NODE_ENV === 'development') {
         console.warn(
           '[SAVEN Resend Simulation] RESEND_API_KEY is not configured or using placeholder. Simulating successful delivery for:',
@@ -196,16 +174,54 @@ export async function POST(request: NextRequest) {
 
     const resend = new Resend(resendApiKey);
 
-    const { data, error } = await resend.emails.send({
-      from: fromEmail,
-      to: toEmail,
-      replyTo: sanitized.email,
-      subject: `New Project Inquiry - ${sanitized.fullName}`,
-      text: emailText,
-    });
+    let resendResponse: { data: { id: string } | null; error: Error | { message: string } | null };
 
-    if (error) {
-      console.error('[SAVEN Resend Error]:', error);
+    if (templateId) {
+      // Step 4: Use hosted Resend template without passing html or text
+      resendResponse = await resend.emails.send({
+        from: fromEmail,
+        to: toEmail,
+        replyTo: sanitized.email,
+        subject,
+        template: {
+          id: templateId,
+          variables: {
+            fullName: sanitized.fullName,
+            email: sanitized.email,
+            company: sanitized.company,
+            phone: sanitized.phone,
+            service: sanitized.service,
+            description: sanitized.description,
+          },
+        },
+      });
+
+      // If hosted template dispatch encounters an issue, fallback to inline HTML
+      if (resendResponse.error) {
+        console.warn('[SAVEN] Hosted template dispatch failed, falling back to direct HTML:', resendResponse.error);
+        resendResponse = await resend.emails.send({
+          from: fromEmail,
+          to: toEmail,
+          replyTo: sanitized.email,
+          subject,
+          html: renderProjectInquiryHtml(sanitized),
+          text: renderProjectInquiryText(sanitized),
+        });
+      }
+    } else {
+      // Step 4: Use inline HTML and plain-text fallback
+      resendResponse = await resend.emails.send({
+        from: fromEmail,
+        to: toEmail,
+        replyTo: sanitized.email,
+        subject,
+        html: renderProjectInquiryHtml(sanitized),
+        text: renderProjectInquiryText(sanitized),
+      });
+    }
+
+    if (resendResponse.error) {
+      console.error('[SAVEN Resend Error]:', resendResponse.error);
       return NextResponse.json(
         {
           success: false,
@@ -220,7 +236,7 @@ export async function POST(request: NextRequest) {
         success: true,
         message: 'Thank you! Your project inquiry has been received. Our team will contact you soon.',
         referenceId,
-        resendId: data?.id,
+        resendId: resendResponse.data?.id,
       },
       { status: 200 }
     );
@@ -235,4 +251,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-
