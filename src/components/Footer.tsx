@@ -79,9 +79,9 @@ export const Footer: React.FC<FooterProps> = ({ onSelectService }) => {
           </div>
 
           {/* Navigation Links Columns */}
-          <div className="md:col-span-7 lg:col-span-8 grid grid-cols-2 sm:grid-cols-3 gap-6 sm:gap-8">
+          <div className="md:col-span-7 lg:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
             {/* Col 1: Explore */}
-            <div>
+            <div className="hidden md:block">
               <h4 className="text-[11px] font-mono uppercase tracking-widest text-neutral-500 mb-3 pb-1 border-b border-neutral-900">
                 EXPLORE
               </h4>
@@ -101,7 +101,7 @@ export const Footer: React.FC<FooterProps> = ({ onSelectService }) => {
             </div>
 
             {/* Col 2: Capabilities / Services */}
-            <div>
+            <div className="hidden md:block">
               <h4 className="text-[11px] font-mono uppercase tracking-widest text-neutral-500 mb-3 pb-1 border-b border-neutral-900">
                 CAPABILITIES
               </h4>
@@ -128,7 +128,7 @@ export const Footer: React.FC<FooterProps> = ({ onSelectService }) => {
             </div>
 
             {/* Col 3: Direct Channels & Connect */}
-            <div className="col-span-2 sm:col-span-1">
+            <div className="col-span-1 md:col-span-1">
               <h4 className="text-[11px] font-mono uppercase tracking-widest text-neutral-500 mb-3 pb-1 border-b border-neutral-900">
                 CONNECT
               </h4>
