@@ -90,7 +90,7 @@ export const Hero: React.FC<HeroProps> = ({ onStartProject, onExploreServices })
 
           {/* Supporting Description */}
           <p className="text-sm sm:text-base md:text-lg text-neutral-300 font-light leading-relaxed max-w-xl mb-7 sm:mb-10">
-            We partner with ambitious businesses to design and build websites, software, and digital products that move ideas forward.
+            Your next big idea starts here. We help businesses build, modernize and scale through strategic design, custom software and intelligent digital solutions.
           </p>
 
           {/* Action Buttons: Stacked on mobile for easy thumb tapping, inline on tablet & desktop */}

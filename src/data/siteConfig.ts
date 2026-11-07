@@ -12,7 +12,7 @@ export const siteConfig = {
     phone: '+91 8668404041',
     whatsapp: 'https://wa.me/8668404041',
     location: 'Remote-First · Global Client Base',
-    hours: 'Mon – Fri: 09:00 – 18:00 UTC',
+    hours: 'Mon – Sat: 08:00 – 20:00 UTC',
     responseTarget: 'Within 24 business hours',
   },
   social: {
