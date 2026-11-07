@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import dns from 'dns';
+import { validateAuthToken } from '@/lib/email-auth';
 import { Resend } from 'resend';
 import {
   renderProjectInquiryHtml,
@@ -55,6 +57,30 @@ function checkRateLimit(ip: string): boolean {
   return true;
 }
 
+// RFC-5322-safe regex (mirrors frontend)
+const EMAIL_REGEX =
+  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.[a-zA-Z]{2,}$/;
+
+type MxResult = 'valid' | 'invalid_domain' | 'unavailable';
+
+async function checkDomainMx(email: string): Promise<MxResult> {
+  try {
+    const domain = email.split('@')[1]?.toLowerCase();
+    if (!domain) return 'invalid_domain';
+    const records = await dns.promises.resolveMx(domain);
+    if (records && records.length > 0) return 'valid';
+    return 'invalid_domain';
+  } catch (err: unknown) {
+    // ENOTFOUND = domain doesn't exist; ENODATA/ESERVFAIL = no MX records / transient
+    const code = (err as NodeJS.ErrnoException).code;
+    if (code === 'ENOTFOUND') return 'invalid_domain';
+    // ENODATA: domain exists but no MX — treat conservatively as invalid
+    if (code === 'ENODATA') return 'invalid_domain';
+    // Any other DNS failure (ESERVFAIL, ETIMEDOUT, etc.) → don't block
+    return 'unavailable';
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const ip =
@@ -73,7 +99,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { fullName, email, phone, company, service, description, website } = body;
+    const { fullName, email, phone, company, service, description, website, emailAuthToken } = body;
 
     // ── Honeypot Bot Detection ────────────────────────────────────────────────
     if (website && typeof website === 'string' && website.trim().length > 0) {
@@ -87,6 +113,27 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // ── Email Auth Token Enforcement ─────────────────────────────────────────
+    // Requires a signed token issued by /api/verify-email.
+    // Without a valid token the inquiry cannot proceed, regardless of other fields.
+    if (!emailAuthToken || typeof emailAuthToken !== 'string') {
+      return NextResponse.json(
+        { success: false, message: 'Email address verification is required before submitting an inquiry.' },
+        { status: 403 }
+      );
+    }
+    const authResult = validateAuthToken(emailAuthToken, typeof email === 'string' ? email.trim() : '');
+    if (!authResult.valid) {
+      const reason = authResult.reason;
+      const msg =
+        reason === 'expired'
+          ? 'Your email verification has expired. Please verify your email address again.'
+          : reason === 'email_mismatch'
+          ? 'Email address mismatch. Please re-verify your email address.'
+          : 'Invalid email verification. Please verify your email address before submitting.';
+      return NextResponse.json({ success: false, message: msg }, { status: 403 });
+    }
+
     // ── Server-Side Validation ────────────────────────────────────────────────
     const errors: Record<string, string> = {};
 
@@ -96,9 +143,8 @@ export async function POST(request: NextRequest) {
       errors.fullName = `Full Name must be under ${MAX_LENGTHS.fullName} characters.`;
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email || typeof email !== 'string' || !emailRegex.test(email.trim())) {
-      errors.email = 'A valid email address is required.';
+    if (!email || typeof email !== 'string' || !EMAIL_REGEX.test(email.trim())) {
+      errors.email = 'Please enter a valid email address.';
     } else if (email.trim().length > MAX_LENGTHS.email) {
       errors.email = `Email must be under ${MAX_LENGTHS.email} characters.`;
     }
@@ -123,6 +169,21 @@ export async function POST(request: NextRequest) {
 
     if (Object.keys(errors).length > 0) {
       return NextResponse.json({ success: false, errors }, { status: 400 });
+    }
+
+    // ── MX Domain Validation (runs only after syntax passes) ─────────────────
+    if (email && typeof email === 'string' && EMAIL_REGEX.test(email.trim())) {
+      const mxResult = await checkDomainMx(email.trim());
+      if (mxResult === 'invalid_domain') {
+        return NextResponse.json(
+          {
+            success: false,
+            errors: { email: 'This email domain does not appear to be valid. Please check your email address.' },
+          },
+          { status: 400 }
+        );
+      }
+      // mxResult === 'unavailable' → DNS failed transiently, allow submission through
     }
 
     // ── Sanitize Data ─────────────────────────────────────────────────────────
