@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { aboutConfig } from '@/data/about';
+import BlurText from './BlurText';
 
 /* ─────────────────────────────────────────────────────────────────────────────
    Component Props & Constants
@@ -63,15 +64,27 @@ export const About: React.FC<AboutProps> = () => {
               {aboutConfig.hero.eyebrow}
             </span>
 
-            <h2
+            <BlurText
+              text={aboutConfig.hero.heading}
+              as="h2"
+              effect="blur"
+              animateBy="words"
+              direction="top"
+              staggerFrom="start"
+              trigger="view"
+              delay={200}
+              stepDuration={0.35}
+              blur={10}
+              distance={50}
+              loop={false}
+              loopDelay={2}
+              focusOnHover={false}
               className="font-medium text-white leading-[1.2] tracking-tight max-w-[620px] text-3xl sm:text-4xl lg:text-[48px]"
               style={{
                 fontFamily: 'var(--font-space-grotesk), "Space Grotesk", sans-serif',
                 fontWeight: 500,
               }}
-            >
-              {aboutConfig.hero.heading}
-            </h2>
+            />
           </motion.div>
 
           {/* Right Column (45%): Introductory Description with Left Border */}
